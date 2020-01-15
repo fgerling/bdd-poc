@@ -3,6 +3,7 @@
 
 ```sh
 go get -v github.com/DATA-DOG/godog/cmd/godog
+go get -v gopkg.in/src-d/go-git.v4
 ```
 
 ## Test
