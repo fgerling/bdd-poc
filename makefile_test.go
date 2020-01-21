@@ -2,15 +2,16 @@ package main
 
 import (
 	"fmt"
-	"github.com/DATA-DOG/godog"
-	git "gopkg.in/src-d/go-git.v4"
 	"os"
 	"os/exec"
 	"path"
 	"strings"
+
+	"github.com/DATA-DOG/godog"
+	git "gopkg.in/src-d/go-git.v4"
 )
 
-func exsistInGopath(arg1 string) error {
+func existInGopath(arg1 string) error {
 	return theFileExsist(path.Join(os.Getenv("GOPATH"), "bin"))
 }
 
@@ -61,8 +62,34 @@ func thereIsNoDirectory(target string) error {
 	return os.RemoveAll(target)
 }
 
+var Out1 []byte
+
+func iRunInDirectory(arg1, arg2 string) error {
+	var err error
+	tmp := strings.Split(arg1, " ")
+	cmd := exec.Command(tmp[0], tmp[1:]...)
+	cmd.Dir = arg2
+	Out1, err = cmd.CombinedOutput()
+	if err != nil {
+		fmt.Fprintf(os.Stdout, "error: %s", err)
+		return err
+	}
+	return err
+}
+
+func theOutputContainsAnd(arg1, arg2 string) error {
+	var err error
+	if !strings.Contains(fmt.Sprintf("%s", string(Out1)), arg1) && strings.Contains(fmt.Sprintf("%s", string(Out1)), arg2) {
+		fmt.Println("ERROR!!!")
+	}
+	return err
+}
+
 func FeatureContext(s *godog.Suite) {
-	s.Step(`^"([^"]*)" exsist in gopath$`, exsistInGopath)
+	s.Step(`^there is "([^"]*)" directory$`, theDirectoryExsist)
+	s.Step(`^I run "([^"]*)" in "([^"]*)" directory$`, iRunInDirectory)
+	s.Step(`^the output contains "([^"]*)" and "([^"]*)"$`, theOutputContainsAnd)
+	s.Step(`^"([^"]*)" exist in gopath$`, existInGopath)
 	s.Step(`^I git clone "([^"]*)" into "([^"]*)"$`, iGitCloneInto)
 	s.Step(`^I remove "([^"]*)" from gopath$`, iRemoveFromGopath)
 	s.Step(`^I run "([^"]*)" in "([^"]*)"$`, iRunIn)
