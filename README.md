@@ -3,7 +3,7 @@
 
 ```sh
 go get -v github.com/DATA-DOG/godog/cmd/godog
-git@github.com:fgerling/bdd-poc.git
+git clone https://github.com/fgerling/bdd-poc.git
 cd bdd-poc
 go mod download
 ```
