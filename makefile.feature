@@ -4,7 +4,7 @@ Feature: Skuba repository
 
   Scenario: checkout skuba
     Given there is no "skuba" directory
-    When I git clone "git@github.com:SUSE/skuba.git" into "skuba"
+    When I git clone "https://github.com/SUSE/skuba.git" into "skuba"
     Then the file "skuba/Makefile" exist
 
 
