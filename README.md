@@ -5,7 +5,6 @@
 go get github.com/cucumber/godog/cmd/godog
 git clone https://github.com/fgerling/bdd-poc.git
 cd bdd-poc
-go mod download
 ```
 
 ## Test
