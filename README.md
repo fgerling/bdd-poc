@@ -2,7 +2,7 @@
 ## Setup
 
 ```sh
-go get -v github.com/DATA-DOG/godog/cmd/godog
+go get github.com/cucumber/godog/cmd/godog
 git clone https://github.com/fgerling/bdd-poc.git
 cd bdd-poc
 go mod download

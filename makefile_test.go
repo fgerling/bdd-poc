@@ -7,7 +7,7 @@ import (
 	"path"
 	"strings"
 
-	"github.com/DATA-DOG/godog"
+	"github.com/cucumber/godog"
 	git "gopkg.in/src-d/go-git.v4"
 )
 
