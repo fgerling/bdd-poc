@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+ name: deployment01
+ labels:
+   app: app01
+   type: green
+spec:
+ template:
+   metadata:
+     name: deployment01-pod
+     labels:
+       app: app01
+       type: green
+   spec:
+     containers:
+     - name: nginx-container
+       image: nginx:alpine
+
+ replicas: 3
+ selector:
+   matchLabels:
+     type: green
