@@ -2,10 +2,13 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 	"path"
+	"strconv"
 	"strings"
+	"time"
 
 	"github.com/DATA-DOG/godog"
 	git "gopkg.in/src-d/go-git.v4"
@@ -85,12 +88,60 @@ func theOutputContainsAnd(arg1, arg2 string) error {
 	return err
 }
 
+func grepFor(arg1 string) error {
+	var err error
+	tmp := strings.Split(fmt.Sprintf("%s", string(Out1)), "\n")
+	for _, elem := range tmp {
+		if strings.Contains(strings.ToLower(elem), arg1) {
+			Out1 = []byte(elem)
+		}
+	}
+	return err
+}
+
+func ReadStringAsInt(arg1 string) (int, error) {
+	a, err := strconv.Atoi(arg1)
+	return a, err
+}
+
+func wait(arg1 string) error {
+	temp := strings.Split(arg1, " ")
+	if len(temp) > 2 || len(temp) == 1 {
+		log.Println("Sorry... you've mistaken the format of time input (it's <NUMBER><1*EMPTYSPACE><WORD[seconds:minutes:hours]>")
+		return nil
+	} else {
+		switch temp[1] {
+		case "seconds":
+			a, err := ReadStringAsInt(temp[0])
+			if err != nil {
+				log.Printf("Error: %v\n", err)
+			}
+			time.Sleep(time.Duration(a) * time.Second)
+		case "minutes":
+			a, err := ReadStringAsInt(temp[0])
+			if err != nil {
+				log.Printf("Error: %v\n", err)
+			}
+			time.Sleep(time.Duration(a) * time.Minute)
+		case "hours":
+			a, err := ReadStringAsInt(temp[0])
+			if err != nil {
+				log.Printf("Error: %v\n", err)
+			}
+			time.Sleep(time.Duration(a) * time.Hour)
+		}
+	}
+	return nil
+}
+
 func FeatureContext(s *godog.Suite) {
+	s.Step(`^grep for "([^"]*)"$`, grepFor)
 	s.Step(`^there is "([^"]*)" directory$`, theDirectoryExsist)
 	s.Step(`^I run "([^"]*)" in "([^"]*)" directory$`, iRunInDirectory)
 	s.Step(`^the output contains "([^"]*)" and "([^"]*)"$`, theOutputContainsAnd)
 	s.Step(`^"([^"]*)" exist in gopath$`, existInGopath)
 	s.Step(`^I git clone "([^"]*)" into "([^"]*)"$`, iGitCloneInto)
+	s.Step(`^wait "([^"]*)"$`, wait)
 	s.Step(`^I remove "([^"]*)" from gopath$`, iRemoveFromGopath)
 	s.Step(`^I run "([^"]*)" in "([^"]*)"$`, iRunIn)
 	s.Step(`^I set "([^"]*)" to "([^"]*)"$`, iSetTo)
