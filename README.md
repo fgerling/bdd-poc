@@ -10,11 +10,11 @@ cd bdd-poc
 ## Test
 ```sh
 # test whole feature
-$ godog makefile.feature
+$ godog features/makefile.feature
 # [...]
 
 # test specific scenario
-$ godog makefile.feature:11
+$ godog features/makefile.feature:11
 Feature: Skuba repository
 
   Scenario: skuba make test                   # makefile.feature:11

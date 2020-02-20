@@ -82,7 +82,7 @@ func FeatureContext(s *godog.Suite) {
 	s.Step(`^"([^"]*)" exist in gopath$`, existInGopath)
 	s.Step(`^I git clone "([^"]*)" into "([^"]*)"$`, iGitCloneInto)
 	s.Step(`^I have "([^"]*)" in PATH$`, suse.IHaveInPATH)
-	s.Step(`^I install the pattern "([^"]*)"$`, suse.IInstallThePattern)
+	s.Step(`^I install the pattern "([^"]*)"$`, func() error { return iRunInDirectory("zypper -n in -t pattern SUSE-CaaSP-Management", ".") })
 	s.Step(`^I remove "([^"]*)" from gopath$`, iRemoveFromGopath)
 	s.Step(`^I run "([^"]*)" in "([^"]*)" directory$`, iRunInDirectory)
 	s.Step(`^I run "([^"]*)" in "([^"]*)"$`, iRunInDirectory)
