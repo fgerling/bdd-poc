@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"os/exec"
@@ -8,8 +9,11 @@ import (
 	"strings"
 
 	"github.com/cucumber/godog"
+	suse "github.com/fgerling/bdd-poc/internal/suse"
 	git "gopkg.in/src-d/go-git.v4"
 )
+
+var Output []byte
 
 func existInGopath(arg1 string) error {
 	return theFileExist(path.Join(os.Getenv("GOPATH"), "bin"))
@@ -24,13 +28,6 @@ func iGitCloneInto(url, target string) error {
 
 func iRemoveFromGopath(file string) error {
 	return os.Remove(path.Join(os.Getenv("GOPATH"), "bin", file))
-}
-
-func iRunIn(command, workdir string) error {
-	var splits = strings.Split(command, " ")
-	cmd := exec.Command(splits[0], splits[1])
-	cmd.Dir = workdir
-	return cmd.Run()
 }
 
 func iSetTo(variable, value string) error {
@@ -62,41 +59,40 @@ func thereIsNoDirectory(target string) error {
 	return os.RemoveAll(target)
 }
 
-var Out1 []byte
-
-func iRunInDirectory(arg1, arg2 string) error {
+func iRunInDirectory(command, workdir string) error {
 	var err error
-	tmp := strings.Split(arg1, " ")
-	cmd := exec.Command(tmp[0], tmp[1:]...)
-	cmd.Dir = arg2
-	Out1, err = cmd.CombinedOutput()
+	args := strings.Split(command, " ")
+	cmd := exec.Command(args[0], args[1:]...)
+	cmd.Dir = workdir
+	Output, err = cmd.CombinedOutput()
 	if err != nil {
-		fmt.Fprintf(os.Stdout, "error: %s", err)
 		return err
 	}
 	return err
 }
 
 func theOutputContainsAnd(arg1, arg2 string) error {
-	var err error
-	if !strings.Contains(fmt.Sprintf("%s", string(Out1)), arg1) && strings.Contains(fmt.Sprintf("%s", string(Out1)), arg2) {
-		fmt.Println("ERROR!!!")
+	if !strings.Contains(fmt.Sprintf("%s", string(Output)), arg1) && strings.Contains(fmt.Sprintf("%s", string(Output)), arg2) {
+		return errors.New("Output does not contain expected arguments")
 	}
-	return err
+	return nil
 }
 
 func FeatureContext(s *godog.Suite) {
-	s.Step(`^there is "([^"]*)" directory$`, theDirectoryExist)
-	s.Step(`^I run "([^"]*)" in "([^"]*)" directory$`, iRunInDirectory)
-	s.Step(`^the output contains "([^"]*)" and "([^"]*)"$`, theOutputContainsAnd)
 	s.Step(`^"([^"]*)" exist in gopath$`, existInGopath)
 	s.Step(`^I git clone "([^"]*)" into "([^"]*)"$`, iGitCloneInto)
+	s.Step(`^I have "([^"]*)" in PATH$`, suse.IHaveInPATH)
+	s.Step(`^I install the pattern "([^"]*)"$`, suse.IInstallThePattern)
 	s.Step(`^I remove "([^"]*)" from gopath$`, iRemoveFromGopath)
-	s.Step(`^I run "([^"]*)" in "([^"]*)"$`, iRunIn)
+	s.Step(`^I run "([^"]*)" in "([^"]*)" directory$`, iRunInDirectory)
+	s.Step(`^I run "([^"]*)" in "([^"]*)"$`, iRunInDirectory)
 	s.Step(`^I set "([^"]*)" to "([^"]*)"$`, iSetTo)
+	s.Step(`^my workstation fulfill the requirements$`, func() error { return iRunInDirectory("./check_requirement_workstation.sh", "scripts") })
 	s.Step(`^the "([^"]*)" is set to "([^"]*)"$`, theIsSetTo)
 	s.Step(`^the "([^"]*)" repository exist$`, theRepositoryExist)
 	s.Step(`^the directory "([^"]*)" exist$`, theDirectoryExist)
 	s.Step(`^the file "([^"]*)" exist$`, theFileExist)
+	s.Step(`^the output contains "([^"]*)" and "([^"]*)"$`, theOutputContainsAnd)
+	s.Step(`^there is "([^"]*)" directory$`, theDirectoryExist)
 	s.Step(`^there is no "([^"]*)" directory$`, thereIsNoDirectory)
 }
