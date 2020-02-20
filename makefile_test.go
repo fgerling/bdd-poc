@@ -10,12 +10,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/DATA-DOG/godog"
+	"github.com/cucumber/godog"
 	git "gopkg.in/src-d/go-git.v4"
 )
 
 func existInGopath(arg1 string) error {
-	return theFileExsist(path.Join(os.Getenv("GOPATH"), "bin"))
+	return theFileExist(path.Join(os.Getenv("GOPATH"), "bin"))
 }
 
 func iGitCloneInto(url, target string) error {
@@ -48,15 +48,15 @@ func theIsSetTo(variable, value string) error {
 	return nil
 }
 
-func theRepositoryExsist(repository string) error {
-	return theFileExsist(path.Join(repository, ".git/"))
+func theRepositoryExist(repository string) error {
+	return theFileExist(path.Join(repository, ".git/"))
 }
 
-func theDirectoryExsist(dir string) error {
-	return theFileExsist(dir)
+func theDirectoryExist(dir string) error {
+	return theFileExist(dir)
 }
 
-func theFileExsist(file string) error {
+func theFileExist(file string) error {
 	_, err := os.Stat(file)
 	return err
 }
@@ -146,8 +146,8 @@ func FeatureContext(s *godog.Suite) {
 	s.Step(`^I run "([^"]*)" in "([^"]*)"$`, iRunIn)
 	s.Step(`^I set "([^"]*)" to "([^"]*)"$`, iSetTo)
 	s.Step(`^the "([^"]*)" is set to "([^"]*)"$`, theIsSetTo)
-	s.Step(`^the "([^"]*)" repository exsist$`, theRepositoryExsist)
-	s.Step(`^the directory "([^"]*)" exsist$`, theDirectoryExsist)
-	s.Step(`^the file "([^"]*)" exsist$`, theFileExsist)
+	s.Step(`^the "([^"]*)" repository exist$`, theRepositoryExist)
+	s.Step(`^the directory "([^"]*)" exist$`, theDirectoryExist)
+	s.Step(`^the file "([^"]*)" exist$`, theFileExist)
 	s.Step(`^there is no "([^"]*)" directory$`, thereIsNoDirectory)
 }
