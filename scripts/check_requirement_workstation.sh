@@ -1,7 +1,11 @@
 #! /usr/bin/env sh
 fulfilled="true"
 
-command -v SUSEConnect >/dev/null || echo "SUSEConnect not found" 1>&2 && exit 2
+if ! command -v SUSEConnect >/dev/null
+then
+	echo "SUSEConnect not found" 1>&2
+	exit 2
+fi
 
 if ! (SUSEConnect --status | jq -er '.[] | select(.identifier=="caasp") | .subscription_status' | grep -q "ACTIVE")
 then
@@ -13,6 +17,7 @@ then
 	echo "sle-module-containers is not 'Registered'"
 	fulfilled=false
 fi
+
 if [ "$fulfilled" == "false" ]
 then
 	exit 1
