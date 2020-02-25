@@ -70,7 +70,7 @@ func iRunInDirectory(command, workdir string) error {
 	fmt.Fprintf(os.Stderr, "%s: %s\n", command, Output)
 	fmt.Fprintf(os.Stderr, "=== END Output of %s ===\n", command)
 	if err != nil {
-		return err
+		return errors.New(string(Output))
 	}
 	return err
 }
