@@ -3,7 +3,7 @@
 Feature: Skuba cluster status
 
   Scenario: checkout cluster status
-    Given there is "imba-cluster" directory
+    Given there is "cluster" directory
     And "skuba" exist in gopath
-    When I run "skuba cluster status" in "imba-cluster" directory
+    When I run "skuba cluster status" in "cluster" directory
     Then the output contains "master" and "worker"
