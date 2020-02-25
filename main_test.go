@@ -27,7 +27,8 @@ func iGitCloneInto(url, target string) error {
 }
 
 func iRemoveFromGopath(file string) error {
-	return os.Remove(path.Join(os.Getenv("GOPATH"), "bin", file))
+	os.Remove(path.Join(os.Getenv("GOPATH"), "bin", file))
+	return nil
 }
 
 func iSetTo(variable, value string) error {
@@ -98,4 +99,6 @@ func FeatureContext(s *godog.Suite) {
 	s.Step(`^the output contains "([^"]*)" and "([^"]*)"$`, theOutputContainsAnd)
 	s.Step(`^there is "([^"]*)" directory$`, theDirectoryExist)
 	s.Step(`^there is no "([^"]*)" directory$`, thereIsNoDirectory)
+	s.Step(`^I have the correct go version$`, func() error { return iRunInDirectory("make go-version-check", "skuba") })
+
 }
