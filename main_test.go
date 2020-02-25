@@ -75,6 +75,13 @@ func iRunInDirectory(command, workdir string) error {
 	return err
 }
 
+func theOutputContains(arg string) error {
+	if !strings.Contains(fmt.Sprintf("%s", string(Output)), arg) {
+		return errors.New("Output does not contain expected argument")
+	}
+	return nil
+}
+
 func theOutputContainsAnd(arg1, arg2 string) error {
 	if !strings.Contains(fmt.Sprintf("%s", string(Output)), arg1) && strings.Contains(fmt.Sprintf("%s", string(Output)), arg2) {
 		return errors.New("Output does not contain expected arguments")
@@ -99,6 +106,8 @@ func FeatureContext(s *godog.Suite) {
 	s.Step(`^the output contains "([^"]*)" and "([^"]*)"$`, theOutputContainsAnd)
 	s.Step(`^there is "([^"]*)" directory$`, theDirectoryExist)
 	s.Step(`^there is no "([^"]*)" directory$`, thereIsNoDirectory)
+	s.Step(`^I run "([^"]*)"$`, func(command string) error { return iRunInDirectory(command, ".") })
+	s.Step(`^the output contains "([^"]*)"$`, theOutputContains)
 	s.Step(`^I have the correct go version$`, func() error { return iRunInDirectory("make go-version-check", "skuba") })
 
 }
