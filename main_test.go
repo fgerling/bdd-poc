@@ -66,9 +66,6 @@ func iRunInDirectory(command, workdir string) error {
 	cmd := exec.Command(args[0], args[1:]...)
 	cmd.Dir = workdir
 	Output, err = cmd.CombinedOutput()
-	fmt.Fprintf(os.Stderr, "=== Output of %s ===\n", command)
-	fmt.Fprintf(os.Stderr, "%s: %s\n", command, Output)
-	fmt.Fprintf(os.Stderr, "=== END Output of %s ===\n", command)
 	if err != nil {
 		return errors.New(string(Output))
 	}
