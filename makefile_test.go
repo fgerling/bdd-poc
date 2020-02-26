@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bdd-poc/cilium"
 	"fmt"
 	"log"
 	"os"
@@ -66,6 +67,7 @@ func thereIsNoDirectory(target string) error {
 }
 
 var Out1 []byte
+var Err error
 
 func iRunInDirectory(arg1, arg2 string) error {
 	var err error
@@ -77,6 +79,7 @@ func iRunInDirectory(arg1, arg2 string) error {
 		fmt.Fprintf(os.Stdout, "error: %s", err)
 		return err
 	}
+	//fmt.Printf("%s", fmt.Sprintf("%s", string(Out1)))
 	return err
 }
 
@@ -103,6 +106,8 @@ func ReadStringAsInt(arg1 string) (int, error) {
 	a, err := strconv.Atoi(arg1)
 	return a, err
 }
+
+var VarMap map[string]string
 
 func wait(arg1 string) error {
 	temp := strings.Split(arg1, " ")
@@ -135,6 +140,16 @@ func wait(arg1 string) error {
 }
 
 func FeatureContext(s *godog.Suite) {
+	//--------------------Cilium-specific test functions-----------------------------------------------
+	s.Step(`^VARIABLE "([^"]*)" equals ContainerFROMOutput "([^"]*)"$`, cilium.VARIABLEEqualsContainerFROMOutput)
+	s.Step(`^I run VAR:"([^"]*)" expecting ERROR in VAR:"([^"]*)" directory$`, cilium.IRunVARExpectingERRORInVARDirectory)
+	s.Step(`^the error contains "([^"]*)" and "([^"]*)"$`, cilium.TheErrorContainsAnd)
+	s.Step(`^I run VAR:"([^"]*)" in VAR:"([^"]*)" directory$`, cilium.IRunVARInVARDirectory)
+	s.Step(`^VARIABLE "([^"]*)" equals "([^"]*)" plus VAR:"([^"]*)"$`, cilium.VARIABLEEqualsPlusVAR)
+	s.Step(`^VARIABLE "([^"]*)" equals "([^"]*)" plus VAR:"([^"]*)" plus "([^"]*)"$`, cilium.VARIABLEEqualsPlusVARPlus)
+	s.Step(`^I run "([^"]*)" in VAR:"([^"]*)" directory$`, cilium.IRunInVARDirectory)
+	s.Step(`^VARIABLE "([^"]*)" equals "([^"]*)"$`, cilium.VARIABLEEquals)
+	//-------------------------------------------------------------------------------------------------
 	s.Step(`^grep for "([^"]*)"$`, grepFor)
 	s.Step(`^there is "([^"]*)" directory$`, theDirectoryExsist)
 	s.Step(`^I run "([^"]*)" in "([^"]*)" directory$`, iRunInDirectory)
