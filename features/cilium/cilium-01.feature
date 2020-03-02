@@ -5,8 +5,7 @@
 Feature: cilium-basic
 
  Scenario: Test-Cilium-Basic on Skuba Cluster
-    Given there is "imba-cluster" directory
-    And "skuba" exist in gopath
+    Given "skuba" exist in gopath
     #And VARIABLE "work-folder" equals "/Users/alexeitighineanu/go/src/github.com/fgerling/bdd-poc/imba-cluster"
     When I run "skuba cluster status"       
     Then the output contains "master" and "worker"

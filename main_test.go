@@ -70,6 +70,7 @@ func iRunInDirectory(command, workdir string) error {
 	args := strings.Split(command, " ")
 	cmd := exec.Command(args[0], args[1:]...)
 	cmd.Dir = workdir
+	//cmd.Env = append(os.Environ(), "KUBECONFIG=/Users/alexeitighineanu/go/src/github.com/fgerling/bdd-poc/admin.conf")
 	Out1, err = cmd.CombinedOutput()
 	if err != nil {
 		return errors.New(string(Output))
@@ -189,12 +190,15 @@ func FeatureContext(s *godog.Suite) {
 	s.Step(`^I have the correct go version$`, func() error { return iRunInDirectory("make go-version-check", "skuba") })
 	s.Step(`^grep for "([^"]*)"$`, grepFor)
 	//--------------------Cilium-specific test functions-----------------------------------------------
+	s.Step(`^I run VARS:"([^"]*)" and check for "([^"]*)" and "([^"]*)"$`, cilium.IRunVARSAndCheckForAnd)
+	s.Step(`^VARIABLE "([^"]*)" equals ContainersFROMOutput "([^"]*)"$`, cilium.VARIABLEEqualsContainersFROMOutput)
 	s.Step(`^VARIABLE "([^"]*)" equals ContainerFROMOutput "([^"]*)"$`, cilium.VARIABLEEqualsContainerFROMOutput)
 	s.Step(`^I run "([^"]*)" expecting ERROR$`, cilium.IRunExpectingERROR)
 	s.Step(`^I run VAR:"([^"]*)" expecting ERROR$`, cilium.IRunVARExpectingERROR)
 	s.Step(`^I run VAR:"([^"]*)" expecting ERROR in VAR:"([^"]*)" directory$`, cilium.IRunVARExpectingERRORInVARDirectory)
 	s.Step(`^the error contains "([^"]*)" and "([^"]*)"$`, cilium.TheErrorContainsAnd)
 	s.Step(`^I run VAR:"([^"]*)" in VAR:"([^"]*)" directory$`, cilium.IRunVARInVARDirectory)
+	s.Step(`^VARIABLES "([^"]*)" equals "([^"]*)" plus VAR:"([^"]*)"$`, cilium.VARIABLESEqualsPlusVAR)
 	s.Step(`^VARIABLE "([^"]*)" equals "([^"]*)" plus VAR:"([^"]*)"$`, cilium.VARIABLEEqualsPlusVAR)
 	s.Step(`^VARIABLE "([^"]*)" equals "([^"]*)" plus VAR:"([^"]*)" plus "([^"]*)"$`, cilium.VARIABLEEqualsPlusVARPlus)
 	s.Step(`^I run "([^"]*)" in VAR:"([^"]*)" directory$`, cilium.IRunInVARDirectory)

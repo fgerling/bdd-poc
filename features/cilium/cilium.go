@@ -1,10 +1,11 @@
 package cilium
 
 import (
+	"errors"
 	"fmt"
-	"log"
 	"os"
 	"os/exec"
+	"strconv"
 	"strings"
 )
 
@@ -38,6 +39,18 @@ func IRunInVARDirectory(arg1, arg2 string) error {
 	return err
 }
 
+func VARIABLEEqualsContainersFROMOutput(arg1, arg2 string) error {
+	var err error
+	tmp := strings.Split(fmt.Sprintf("%s", string(Out1)), "\n")
+	for index, elem := range tmp {
+		if strings.Contains(elem, arg2) {
+			tmp2 := strings.Split(elem, " ")
+			err = VARIABLEEquals(arg1+strconv.Itoa(index), tmp2[0])
+		}
+	}
+	return err
+}
+
 func VARIABLEEqualsContainerFROMOutput(arg1, arg2 string) error {
 	var err error
 	tmp := strings.Split(fmt.Sprintf("%s", string(Out1)), "\n")
@@ -57,7 +70,7 @@ func VARIABLEEquals(arg1, arg2 string) error {
 		VarMap = make(map[string]string)
 	}
 	VarMap[arg1] = arg2
-	log.Printf("VAR: %s = %s\n", arg1, VarMap[arg1])
+	fmt.Printf(" VAR: %s = %s \n", arg1, VarMap[arg1])
 	return err
 }
 
@@ -65,6 +78,21 @@ func VARIABLEEqualsPlusVARPlus(arg1, arg2, arg3, arg4 string) error {
 	arg3 = VarMap[arg3]
 	tmp := arg2 + arg3 + arg4
 	err := VARIABLEEquals(arg1, tmp)
+	return err
+}
+
+func VARIABLESEqualsPlusVAR(arg1, arg2, arg3 string) error {
+	var err error
+	for i := 0; i < 1000; i++ {
+		if VarMap[arg3+strconv.Itoa(i)] != "" {
+			tmp := arg2 + VarMap[arg3+strconv.Itoa(i)]
+			err = VARIABLEEquals(arg1+strconv.Itoa(i), tmp)
+			if err == nil {
+				VarMap[arg3+strconv.Itoa(i)] = ""
+			}
+		}
+
+	}
 	return err
 }
 
@@ -118,5 +146,24 @@ func IRunVARExpectingERRORInVARDirectory(arg1, arg2 string) error {
 	}
 	Err = err
 	err = nil
+	return err
+}
+
+func theOutputContainsAnd(arg1, arg2 string) error {
+	if !strings.Contains(fmt.Sprintf("%s", string(Out1)), arg1) && strings.Contains(fmt.Sprintf("%s", string(Out1)), arg2) {
+		return errors.New("Output does not contain expected arguments")
+	}
+	return nil
+}
+
+func IRunVARSAndCheckForAnd(arg1, arg2, arg3 string) error {
+	var err error
+	for i := 0; i < 1000; i++ {
+		if VarMap[arg1+strconv.Itoa(i)] != "" {
+			err = iRunInDirectory(VarMap[arg1+strconv.Itoa(i)], ".")
+			theOutputContainsAnd(arg2, arg3)
+			VarMap[arg1+strconv.Itoa(i)] = ""
+		}
+	}
 	return err
 }
