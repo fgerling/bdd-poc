@@ -12,6 +12,7 @@ import (
 	"time"
 
 	cilium "github.com/fgerling/bdd-poc/features/cilium"
+	"github.com/fgerling/bdd-poc/features/kured"
 
 	"github.com/cucumber/godog"
 	suse "github.com/fgerling/bdd-poc/internal/suse"
@@ -76,6 +77,7 @@ func iRunInDirectory(command, workdir string) error {
 		return errors.New(string(Output))
 	}
 	cilium.Out1 = Out1
+	kured.Out1 = Out1
 	return err
 }
 
@@ -204,4 +206,7 @@ func FeatureContext(s *godog.Suite) {
 	s.Step(`^I run "([^"]*)" in VAR:"([^"]*)" directory$`, cilium.IRunInVARDirectory)
 	s.Step(`^VARIABLE "([^"]*)" equals "([^"]*)"$`, cilium.VARIABLEEquals)
 	//-------------------------------------------------------------------------------------------------
+	//-------------------Kured-specific test functions-------------------------------------------------
+	s.Step(`^I run VARS:"([^"]*)" and IPSFromOutput$`, kured.IRunVARSAndIPSFromOutput)
+	s.Step(`^I run SSHCMD "([^"]*)" on MASTER$`, kured.IRunSSHCMDOnMASTER)
 }
