@@ -43,7 +43,7 @@ func VARIABLEEqualsContainersFROMOutput(arg1, arg2 string) error {
 	var err error
 	tmp := strings.Split(fmt.Sprintf("%s", string(Out1)), "\n")
 	for index, elem := range tmp {
-		if strings.Contains(elem, arg2) {
+		if strings.Contains(elem, arg2) && !strings.Contains(elem, "operator") { //--- "operator" is to exclude cilium-operator
 			tmp2 := strings.Split(elem, " ")
 			err = VARIABLEEquals(arg1+strconv.Itoa(index), tmp2[0])
 		}

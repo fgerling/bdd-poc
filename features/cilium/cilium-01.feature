@@ -1,6 +1,7 @@
 # doc1:   https://gitlab.suse.de/mkravec/scripts/blob/master/tests/cilium.sh
 # doc2:   http://docs.cilium.io/en/v1.6/gettingstarted/http/
-# doc3:   https://github.com/fgerling/bdd-poc
+# TC:   https://github.com/fgerling/bdd-poc
+# This is a basic test for cilium (no PR or BSC provided)
 
 Feature: cilium-basic
 
