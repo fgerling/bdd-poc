@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"net"
 	"os"
 	"os/exec"
 	"path"
@@ -86,6 +87,31 @@ func theOutputContainsAnd(arg1, arg2 string) error {
 	return nil
 }
 
+func theOutputContainsOr(arg1, arg2 string) error {
+	if strings.Contains(fmt.Sprintf("%s", string(Output)), arg1) || strings.Contains(fmt.Sprintf("%s", string(Output)), arg2) {
+		return nil
+	}
+	return errors.New("Output does not contain expected arguments")
+}
+
+func theOutputContainsAValidIpAddress() error {
+	IP := net.ParseIP(string(Output))
+	if IP == nil {
+		return errors.New(fmt.Sprintf("%s is not a valid textual representation of an IP address", string(Output)))
+	}
+	return nil
+}
+
+func theOutputShoudMatchTheOutputTheCommand(command2 string) error {
+	args := strings.Split(command2, " ")
+	cmd := exec.Command(args[0], args[1:]...)
+	cmd2Output, err := cmd.CombinedOutput()
+	if err != nil {
+		return errors.New(string(cmd2Output))
+	}
+	return theOutputContains(string(cmd2Output))
+}
+
 func FeatureContext(s *godog.Suite) {
 	s.Step(`^"([^"]*)" exist in gopath$`, existInGopath)
 	s.Step(`^I git clone "([^"]*)" into "([^"]*)"$`, iGitCloneInto)
@@ -100,11 +126,13 @@ func FeatureContext(s *godog.Suite) {
 	s.Step(`^the "([^"]*)" repository exist$`, theRepositoryExist)
 	s.Step(`^the directory "([^"]*)" exist$`, theDirectoryExist)
 	s.Step(`^the file "([^"]*)" exist$`, theFileExist)
+	s.Step(`^the output contains "([^"]*)"$`, theOutputContains)
 	s.Step(`^the output contains "([^"]*)" and "([^"]*)"$`, theOutputContainsAnd)
+	s.Step(`^the output contains "([^"]*)" or "([^"]*)"$`, theOutputContainsOr)
+	s.Step(`^the output contains a valid ip address$`, theOutputContainsAValidIpAddress)
+	s.Step(`^the output shoud match the output the command "([^"]*)"$`, theOutputShoudMatchTheOutputTheCommand)
 	s.Step(`^there is "([^"]*)" directory$`, theDirectoryExist)
 	s.Step(`^there is no "([^"]*)" directory$`, thereIsNoDirectory)
 	s.Step(`^I run "([^"]*)"$`, func(command string) error { return iRunInDirectory(command, ".") })
-	s.Step(`^the output contains "([^"]*)"$`, theOutputContains)
 	s.Step(`^I have the correct go version$`, func() error { return iRunInDirectory("make go-version-check", "skuba") })
-
 }
