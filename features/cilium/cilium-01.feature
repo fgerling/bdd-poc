@@ -19,15 +19,16 @@ Feature: cilium-basic
     When I run "kubectl get pods --selector=org=empire" 
     Then the output contains "deathstar" and "tiefighter"
     When I run "kubectl get pods --selector=org=alliance"
+    Then the output contains "xwing"
 
     Scenario: Check the starwars cilium pods
     When I run "kubectl get pods"                  
     And grep for "xwing"
-    Then the output contains "running" and "running"
+    Then the output contains "running"
     And grep for "deathstar"
-    Then the output contains "running" and "running"
+    Then the output contains "running"
     And grep for "tiefighter"
-    Then the output contains "running" and "running"
+    Then the output contains "running"
 
     Scenario: Test number1 if empire's ship is allowed into empire space
     And I run "kubectl exec tiefighter -- curl -sm10 -XPOST deathstar.default.svc.cluster.local/v1/request-landing"
