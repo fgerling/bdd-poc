@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	. "github.com/fgerling/bdd-poc/features"
+	. "github.com/fgerling/bdd-poc/features/goscripts"
 
 	"github.com/cucumber/godog"
 	suse "github.com/fgerling/bdd-poc/internal/suse"
