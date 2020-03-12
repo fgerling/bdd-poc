@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	. "github.com/fgerling/bdd-poc/features/goscripts"
+	. "github.com/fgerling/bdd-poc/internal"
 
 	"github.com/cucumber/godog"
 	suse "github.com/fgerling/bdd-poc/internal/suse"
@@ -142,4 +142,6 @@ func FeatureContext(s *godog.Suite) {
 	//-------------------Kured-specific test functions-------------------------------------------------
 	s.Step(`^I run VARS:"([^"]*)" and IPSFromOutput$`, test.IRunVARSAndIPSFromOutput)
 	s.Step(`^I run SSHCMD "([^"]*)" on MASTER$`, test.IRunSSHCMDOnMASTER)
+	//-------------------Skuba Upgrade - specific test fuctions----------------------------------------
+	s.Step(`^I run skuba upgrade plan <First Master> in VAR:"([^"]*)" directory$`, test.IRunSkubaUpgradePlanFirstMasterInVARDirectory)
 }
