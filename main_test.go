@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/cucumber/godog"
+	skuba "github.com/fgerling/bdd-poc/internal/skuba"
 	suse "github.com/fgerling/bdd-poc/internal/suse"
 	git "gopkg.in/src-d/go-git.v4"
 )
@@ -60,6 +61,10 @@ func thereIsNoDirectory(target string) error {
 	return os.RemoveAll(target)
 }
 
+func iRun(command string) error {
+	return iRunInDirectory(command, ".")
+}
+
 func iRunInDirectory(command, workdir string) error {
 	var err error
 	args := strings.Split(command, " ")
@@ -107,4 +112,10 @@ func FeatureContext(s *godog.Suite) {
 	s.Step(`^the output contains "([^"]*)"$`, theOutputContains)
 	s.Step(`^I have the correct go version$`, func() error { return iRunInDirectory("make go-version-check", "skuba") })
 
+	s.Step(`^skuba has version "([^"]*)"$`, skuba.SkubaHasVersion)
+	s.Step(`^I have a cluster "([^"]*)"$`, theDirectoryExist)
+	s.Step(`^I execute "([^"]*)" in "([^"]*)"$`, iRunInDirectory)
+	s.Step(`^skuba cluster status "([^"]*)" is "([^"]*)"$`, skuba.ClusterStatus)
+	s.Step(`^I upgrade the cluster with skuba release version "([^"]*)"$`, skuba.IUpgradeTheClusterWithSkubaReleaseVersion)
+	s.Step(`^I execute "([^"]*)"$`, iRun)
 }
