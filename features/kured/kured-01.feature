@@ -15,3 +15,6 @@ Scenario: Checking if reboot triggered on one node
     And VARIABLES "commandchecks" equals "kubectl describe pod -n kube-system " plus VAR:"privileged-pods"
     And I run VARS:"commandchecks" and IPSFromOutput
     And I run SSHCMD "sudo touch /var/run/reboot-required" on MASTER
+    And wait "140 seconds"
+    And I run SSHCMD "sudo crictl ps" on MASTER
+    Then the output contains "seconds" or "a minute"
