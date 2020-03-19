@@ -68,8 +68,8 @@ Scenario: Applying upgrade on nodes
     When I run "skuba addon upgrade apply" in VAR:"imba-cluster" directory
     Then the output contains "not all nodes"
 
-    When VARIABLES "upgradeapply2" equals "skuba node upgrade apply --user sles --sudo --target " plus Worker Node IPS
-    And I run UPGRADE VARS:"upgradeapply2" in VAR:"imba-cluster" directory
+    When VARIABLES "upgradeapply3" equals "skuba node upgrade apply --user sles --sudo --target " plus Worker Node IPS
+    And I run UPGRADE VARS:"upgradeapply3" in VAR:"imba-cluster" directory
     Then the output contains "successfully" or "to date"
 
     When I run "skuba addon upgrade apply" in VAR:"imba-cluster" directory
