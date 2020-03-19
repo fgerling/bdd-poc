@@ -23,9 +23,37 @@ func (test *TestRun) VARIABLESEqualsPlusMasterNodes(arg1, arg2 string) error {
 	return nil
 }
 
+func (test *TestRun) VARIABLESEqualsPlusWorkerNodes(arg1, arg2 string) error {
+	var temp1 NodeCheck
+	if test.UpgradeCheck == nil {
+		test.UpgradeCheck = make(map[string]NodeCheck)
+	}
+	for key, _ := range test.VarMap {
+		if strings.Contains(key, "worker") && !strings.Contains(key, arg1) && test.UpgradeCheck[key].IP == "" {
+			test.VarMap[arg1+key] = arg2 + key
+			fmt.Printf("VAR: %s  = %s\n", arg1+key, arg2+key)
+			temp1.IP = test.VarMap[key]
+			temp1.PlanDone = false
+			temp1.UPDone = false
+			test.UpgradeCheck[key] = temp1
+		}
+	}
+	return nil
+}
+
 func (test *TestRun) VARIABLESEqualsPlusMasterNodeIPS(arg1, arg2 string) error {
 	for key, _ := range test.VarMap {
 		if strings.Contains(key, "master") && !strings.Contains(test.VarMap[key], "plan") && !strings.Contains(key, arg1) {
+			test.VarMap[arg1+key] = arg2 + test.UpgradeCheck[key].IP
+			fmt.Printf("VAR: %s  = %s\n", arg1+key, test.VarMap[arg1+key])
+		}
+	}
+	return nil
+}
+
+func (test *TestRun) VARIABLESEqualsPlusWorkerNodeIPS(arg1, arg2 string) error {
+	for key, _ := range test.VarMap {
+		if strings.Contains(key, "worker") && !strings.Contains(test.VarMap[key], "plan") && !strings.Contains(key, arg1) {
 			test.VarMap[arg1+key] = arg2 + test.UpgradeCheck[key].IP
 			fmt.Printf("VAR: %s  = %s\n", arg1+key, test.VarMap[arg1+key])
 		}
