@@ -19,7 +19,6 @@ func (test *TestRun) IRunInDirectory(arg1, arg2 string) error {
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		fmt.Fprintf(os.Stdout, "error: %s", err)
-		return err
 	}
 	test.Output = output
 	test.Err = err
