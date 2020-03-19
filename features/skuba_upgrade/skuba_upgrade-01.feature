@@ -7,7 +7,7 @@ Feature: Check if cluster upgrade is fine
 
 Scenario: Checking if cluster exists
     Given "skuba" exist in gopath
-    And VARIABLE "imba-cluster" equals "/root/go/src/github.com/fgerling/bdd-poc/imba-cluster"
+    And VARIABLE "imba-cluster" equals "/Users/alexeitighineanu/go/src/github.com/fgerling/bdd-poc/imba-cluster"
     When I run "skuba cluster status" in VAR:"imba-cluster" directory
     Then the output contains "master" and "worker"
     Then the output contains "1.15.2"
@@ -21,12 +21,12 @@ Scenario: Checking if cluster exists
     #Then the output contains "upgrade path to update"
     #Then the output contains "addon upgrades from"
 
-    When I run "skuba addon upgrade apply"
+    When I run "skuba addon upgrade apply" in VAR:"imba-cluster" directory
     Then the output contains "congratulations"
 
 Scenario: Applying upgrade on nodes
     When I run "kubectl get pods --namespace=kube-system"
-    And VARIABLE "imba-cluster" equals "/root/go/src/github.com/fgerling/bdd-poc/imba-cluster"
+    And VARIABLE "imba-cluster" equals "/Users/alexeitighineanu/go/src/github.com/fgerling/bdd-poc/imba-cluster"
     When VARIABLE "privileged-pods" equals ContainersFROMOutput "kured-"
     And VARIABLES "commandchecks" equals "kubectl describe pod -n kube-system " plus VAR:"privileged-pods"
     And I run VARS:"commandchecks" and IPSFromOutput
@@ -43,13 +43,40 @@ Scenario: Applying upgrade on nodes
     Then the output contains "apiserver" and "controller-manager" and "scheduler"
     And the output contains "etcd" and "kubelet" and "cri-o"
 
-    When VARIABLES "upgradeapply" equals "skuba node upgrade apply --user sles --target " plus Master Node IPS
+    When VARIABLES "upgradeapply" equals "skuba node upgrade apply --user sles --sudo --target " plus Master Node IPS
     And I run UPGRADE VARS:"upgradeapply" in VAR:"imba-cluster" directory
     Then the output contains "successfully" or "to date"
+    And wait "30 seconds"
     And I run UPGRADE VARS:"upgradeapply" in VAR:"imba-cluster" directory
     Then the output contains "successfully" or "to date"
+    And wait "30 seconds"
     And I run UPGRADE VARS:"upgradeapply" in VAR:"imba-cluster" directory
     Then the output contains "successfully" or "to date"
+    And wait "30 seconds"
+
+# UPGRADING THEN WORKERS    
+    When VARIABLES "commandupgrades2" equals "skuba node upgrade plan " plus Worker Nodes
+    And I run UPGRADE VARS:"commandupgrades2" in VAR:"imba-cluster" directory
+    Then the output contains "kubelet" and "cri-o"
+    And I run UPGRADE VARS:"commandupgrades2" in VAR:"imba-cluster" directory
+    Then the output contains "kubelet" and "cri-o"
+
+    When VARIABLES "upgradeapply2" equals "skuba node upgrade apply --user sles --sudo --target " plus Worker Node IPS
+    And I run UPGRADE VARS:"upgradeapply2" in VAR:"imba-cluster" directory
+    Then the output contains "successfully" or "to date"
+ 
+    When I run "skuba addon upgrade apply" in VAR:"imba-cluster" directory
+    Then the output contains "not all nodes"
+
+    When VARIABLES "upgradeapply2" equals "skuba node upgrade apply --user sles --sudo --target " plus Worker Node IPS
+    And I run UPGRADE VARS:"upgradeapply2" in VAR:"imba-cluster" directory
+    Then the output contains "successfully" or "to date"
+
+    When I run "skuba addon upgrade apply" in VAR:"imba-cluster" directory
+    Then the output contains "successfully" or "congratulations"
+
+
+
 
 
     
