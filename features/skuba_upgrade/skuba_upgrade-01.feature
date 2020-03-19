@@ -21,7 +21,7 @@ Scenario: Checking if cluster exists
     #Then the output contains "upgrade path to update"
     #Then the output contains "addon upgrades from"
 
-    When I run "skuba addon upgrade apply"
+    When I run "skuba addon upgrade apply" in VAR:"imba-cluster" directory
     Then the output contains "congratulations"
 
 Scenario: Applying upgrade on nodes
@@ -43,13 +43,18 @@ Scenario: Applying upgrade on nodes
     Then the output contains "apiserver" and "controller-manager" and "scheduler"
     And the output contains "etcd" and "kubelet" and "cri-o"
 
-    When VARIABLES "upgradeapply" equals "skuba node upgrade apply --user sles --target " plus Master Node IPS
+    When VARIABLES "upgradeapply" equals "skuba node upgrade apply --user sles --sudo --target " plus Master Node IPS
     And I run UPGRADE VARS:"upgradeapply" in VAR:"imba-cluster" directory
     Then the output contains "successfully" or "to date"
+    And I wait "30 seconds"
     And I run UPGRADE VARS:"upgradeapply" in VAR:"imba-cluster" directory
     Then the output contains "successfully" or "to date"
+    And I wait "30 seconds"
     And I run UPGRADE VARS:"upgradeapply" in VAR:"imba-cluster" directory
     Then the output contains "successfully" or "to date"
-
-
-    
+    And I wait "30 seconds"
+  
+    When VARIABLES "upgradeapply2" equals "skuba node upgrade apply --user sles --sudo --target " plus Worker Node IPS
+    And I run UPGRADE VARS:"upgradeapply2" in VAR:"imba-cluster" directory
+    And I wait "30 seconds"
+    Then the output contains "successfully" or "to date"  
