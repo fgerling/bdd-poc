@@ -15,6 +15,7 @@ func (test *TestRun) IRunInDirectory(arg1, arg2 string) error {
 	tmp := strings.Split(arg1, " ")
 	cmd := exec.Command(tmp[0], tmp[1:]...)
 	cmd.Dir = arg2
+	//fmt.Printf("RUN: %s in %s\n", arg1, arg2)
 	output, err := cmd.CombinedOutput()
 	if err != nil {
 		fmt.Fprintf(os.Stdout, "error: %s", err)

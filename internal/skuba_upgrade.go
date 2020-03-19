@@ -2,24 +2,52 @@ package features
 
 import (
 	"fmt"
-	"os"
-	"os/exec"
 	"strings"
 )
 
-func (test *TestRun) IRunSkubaUpgradePlanFirstMasterInVARDirectory(arg1 string) error {
-	var firstmaster string
+func (test *TestRun) VARIABLESEqualsPlusMasterNodes(arg1, arg2 string) error {
+	var temp1 NodeCheck
+	if test.UpgradeCheck == nil {
+		test.UpgradeCheck = make(map[string]NodeCheck)
+	}
 	for key, _ := range test.VarMap {
-		if strings.Contains(key, "master") && strings.Contains(key, "00") {
-			firstmaster = key
+		if strings.Contains(key, "master") && !strings.Contains(key, arg1) && test.UpgradeCheck[key].IP == "" {
+			test.VarMap[arg1+key] = arg2 + key
+			fmt.Printf("VAR: %s  = %s\n", arg1+key, arg2+key)
+			temp1.IP = test.VarMap[key]
+			temp1.PlanDone = false
+			temp1.UPDone = false
+			test.UpgradeCheck[key] = temp1
 		}
 	}
-	cmd := []string{"skuba", "upgrade", "plan", firstmaster}
-	output, err := exec.Command(cmd[0], cmd[1:]...).CombinedOutput()
-	if err != nil {
-		test.Err = err
-		fmt.Fprintf(os.Stdout, "error: %v", err)
+	return nil
+}
+
+func (test *TestRun) VARIABLESEqualsPlusMasterNodeIPS(arg1, arg2 string) error {
+	for key, _ := range test.VarMap {
+		if strings.Contains(key, "master") && !strings.Contains(test.VarMap[key], "plan") && !strings.Contains(key, arg1) {
+			test.VarMap[arg1+key] = arg2 + test.UpgradeCheck[key].IP
+			fmt.Printf("VAR: %s  = %s\n", arg1+key, test.VarMap[arg1+key])
+		}
 	}
-	test.Output = output
+	return nil
+}
+
+func (test *TestRun) IRunUPGRADEVARSInVARDirectory(arg1, arg2 string) error {
+	for key, _ := range test.VarMap {
+		if strings.Contains(key, arg1) && test.UpgradeCheck[key].PlanDone == false {
+			//fmt.Printf("Command we run: %s\n", test.VarMap[key])
+			test.Output = []byte{1}
+			test.IRunInDirectory(test.VarMap[key], test.VarMap[arg2])
+			temp1 := test.UpgradeCheck[key]
+			temp1.PlanDone = true
+			if strings.Contains(test.VarMap[key], "apply") {
+				temp1.UPDone = true
+			}
+			test.UpgradeCheck[key] = temp1
+			fmt.Println(fmt.Sprintf("%s", string(test.Output)))
+			break
+		}
+	}
 	return nil
 }

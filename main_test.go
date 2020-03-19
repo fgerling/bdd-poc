@@ -115,6 +115,7 @@ func FeatureContext(s *godog.Suite) {
 	s.Step(`^the "([^"]*)" repository exist$`, theRepositoryExist)
 	s.Step(`^the directory "([^"]*)" exist$`, theDirectoryExist)
 	s.Step(`^the file "([^"]*)" exist$`, theFileExist)
+	s.Step(`^the output contains "([^"]*)" and "([^"]*)" and "([^"]*)"$`, test.TheOutputContainsAndAnd)
 	s.Step(`^the output contains "([^"]*)" and "([^"]*)"$`, test.TheOutputContainsAnd)
 	s.Step(`^the output contains "([^"]*)" or "([^"]*)"$`, test.TheOutputContainsOr)
 	s.Step(`^there is "([^"]*)" directory$`, theDirectoryExist)
@@ -143,5 +144,7 @@ func FeatureContext(s *godog.Suite) {
 	s.Step(`^I run VARS:"([^"]*)" and IPSFromOutput$`, test.IRunVARSAndIPSFromOutput)
 	s.Step(`^I run SSHCMD "([^"]*)" on MASTER$`, test.IRunSSHCMDOnMASTER)
 	//-------------------Skuba Upgrade - specific test fuctions----------------------------------------
-	s.Step(`^I run skuba upgrade plan <First Master> in VAR:"([^"]*)" directory$`, test.IRunSkubaUpgradePlanFirstMasterInVARDirectory)
+	s.Step(`^I run UPGRADE VARS:"([^"]*)" in VAR:"([^"]*)" directory$`, test.IRunUPGRADEVARSInVARDirectory)
+	s.Step(`^VARIABLES "([^"]*)" equals "([^"]*)" plus Master Nodes$`, test.VARIABLESEqualsPlusMasterNodes)
+	s.Step(`^VARIABLES "([^"]*)" equals "([^"]*)" plus Master Node IPS$`, test.VARIABLESEqualsPlusMasterNodeIPS)
 }

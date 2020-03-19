@@ -27,6 +27,13 @@ func (test *TestRun) TheOutputContainsAnd(arg1, arg2 string) error {
 	return nil
 }
 
+func (test *TestRun) TheOutputContainsAndAnd(arg1, arg2, arg3 string) error {
+	if !strings.Contains(strings.ToLower(fmt.Sprintf("%s", string(test.Output))), arg1) && strings.Contains(strings.ToLower(fmt.Sprintf("%s", string(test.Output))), arg2) && strings.Contains(strings.ToLower(fmt.Sprintf("%s", string(test.Output))), arg3) {
+		return errors.New("Output does not contain expected arguments")
+	}
+	return nil
+}
+
 func (test *TestRun) TheOutputContainsOr(arg1, arg2 string) error {
 	if !strings.Contains(strings.ToLower(fmt.Sprintf("%s", string(test.Output))), arg1) || strings.Contains(strings.ToLower(fmt.Sprintf("%s", string(test.Output))), arg2) {
 		return errors.New("Output does not contain expected arguments")
