@@ -146,5 +146,7 @@ func FeatureContext(s *godog.Suite) {
 	//-------------------Skuba Upgrade - specific test fuctions----------------------------------------
 	s.Step(`^I run UPGRADE VARS:"([^"]*)" in VAR:"([^"]*)" directory$`, test.IRunUPGRADEVARSInVARDirectory)
 	s.Step(`^VARIABLES "([^"]*)" equals "([^"]*)" plus Master Nodes$`, test.VARIABLESEqualsPlusMasterNodes)
+	s.Step(`^VARIABLES "([^"]*)" equals "([^"]*)" plus Worker Nodes$`, test.VARIABLESEqualsPlusWorkerNodes)
 	s.Step(`^VARIABLES "([^"]*)" equals "([^"]*)" plus Master Node IPS$`, test.VARIABLESEqualsPlusMasterNodeIPS)
+	s.Step(`^VARIABLES "([^"]*)" equals "([^"]*)" plus Worker Node IPS$`, test.VARIABLESEqualsPlusWorkerNodeIPS)
 }
