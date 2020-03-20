@@ -56,6 +56,12 @@ Scenario: Applying upgrade on nodes
 
 # UPGRADING THEN WORKERS 
     Scenario: Upgrading Workers
+    When I run "kubectl get pods --namespace=kube-system"
+    And VARIABLE "imba-cluster" equals "/root/go/src/github.com/fgerling/bdd-poc/imba-cluster"
+    When VARIABLE "privileged-pods" equals ContainersFROMOutput "kured-"
+    And VARIABLES "commandchecks" equals "kubectl describe pod -n kube-system " plus VAR:"privileged-pods"
+    And I run VARS:"commandchecks" and IPSFromOutput
+
     When VARIABLES "commandupgrades2" equals "skuba node upgrade plan " plus Worker Nodes
     And VARIABLE "imba-cluster" equals "/root/go/src/github.com/fgerling/bdd-poc/imba-cluster"
     And I run UPGRADE VARS:"commandupgrades2" in VAR:"imba-cluster" directory
@@ -68,7 +74,7 @@ Scenario: Applying upgrade on nodes
     Then the output contains "successfully" or "to date" or "there are addon upgrades available"
  
     When I run "skuba addon upgrade apply" in VAR:"imba-cluster" directory
-    Then the output contains "not all nodes"
+    Then the output contains "not all nodes" or "successfully" or "congratulations"
 
     When VARIABLES "upgradeapply3" equals "skuba node upgrade apply --user sles --sudo --target " plus Worker Node IPS
     And I run UPGRADE VARS:"upgradeapply3" in VAR:"imba-cluster" directory
