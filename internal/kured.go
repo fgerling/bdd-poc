@@ -22,7 +22,7 @@ func (test *TestRun) IRunInDirectory(arg1, arg2 string) error {
 	}
 	test.Output = output
 	test.Err = err
-	//fmt.Printf("%s", fmt.Sprintf("%s", string(Out1)))
+	fmt.Printf("%s", fmt.Sprintf("%s", string(test.Output)))
 	return err
 }
 

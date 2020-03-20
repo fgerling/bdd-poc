@@ -60,6 +60,18 @@ func (test *TestRun) IRunVAR(arg1 string) error {
 	}
 }
 
+func (test *TestRun) IRunVARInVARDirectory(arg1, arg2 string) error {
+	arg1 = test.VarMap[arg1]
+	err := test.IRunInVARDirectory(arg1, arg2)
+	return err
+}
+
+func (test *TestRun) IRunInVARDirectory(arg1, arg2 string) error {
+	arg2 = test.VarMap[arg2]
+	err := test.IRunInDirectory(arg1, arg2)
+	return err
+}
+
 func (test *TestRun) Irun(command string) error {
 	return test.IRunInDirectory(command, ".")
 }
