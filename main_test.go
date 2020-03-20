@@ -118,6 +118,7 @@ func FeatureContext(s *godog.Suite) {
 	s.Step(`^the output contains "([^"]*)" and "([^"]*)" and "([^"]*)"$`, test.TheOutputContainsAndAnd)
 	s.Step(`^the output contains "([^"]*)" and "([^"]*)"$`, test.TheOutputContainsAnd)
 	s.Step(`^the output contains "([^"]*)" or "([^"]*)"$`, test.TheOutputContainsOr)
+	s.Step(`^the output contains "([^"]*)" or "([^"]*)" or "([^"]*)"$`, test.TheOutputContainsOrOr)
 	s.Step(`^there is "([^"]*)" directory$`, theDirectoryExist)
 	s.Step(`^there is no "([^"]*)" directory$`, thereIsNoDirectory)
 	s.Step(`^I run VAR:"([^"]*)"$`, test.IRunVAR)
