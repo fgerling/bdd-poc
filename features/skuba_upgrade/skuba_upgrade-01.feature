@@ -54,7 +54,8 @@ Scenario: Applying upgrade on nodes
     Then the output contains "successfully" or "to date" or "there are addon upgrades available"
     And wait "30 seconds"
 
-# UPGRADING THEN WORKERS    
+# UPGRADING THEN WORKERS 
+    Scenario: Upgrading Workers
     When VARIABLES "commandupgrades2" equals "skuba node upgrade plan " plus Worker Nodes
     And I run UPGRADE VARS:"commandupgrades2" in VAR:"imba-cluster" directory
     Then the output contains "kubelet" and "cri-o"
