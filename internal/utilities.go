@@ -43,10 +43,9 @@ func (test *TestRun) TheOutputContainsOr(arg1, arg2 string) error {
 	return nil
 }
 
-
-func (test *TestRun) TheOutputContainsOrOr(arg1, arg2, arg3  string) error {
+func (test *TestRun) TheOutputContainsOrOr(arg1, arg2, arg3 string) error {
 	//fmt.Printf("text:\n%s\nvars: %s   %s\n ", strings.ToLower(fmt.Sprintf("%s", string(test.Output))), arg1, arg2)
-	if strings.Contains(strings.ToLower(fmt.Sprintf("%s", string(test.Output))), arg1) || strings.Contains(strings.ToLower(fmt.Sprintf("%s", string(test.Output))), arg2) {
+	if strings.Contains(strings.ToLower(fmt.Sprintf("%s", string(test.Output))), arg1) || strings.Contains(strings.ToLower(fmt.Sprintf("%s", string(test.Output))), arg2) || strings.Contains(strings.ToLower(fmt.Sprintf("%s", string(test.Output))), arg3) {
 	} else {
 		return errors.New("Output does not contain expected arguments")
 	}
