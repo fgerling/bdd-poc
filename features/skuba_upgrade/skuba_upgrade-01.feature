@@ -55,15 +55,9 @@ Scenario: Applying upgrade on nodes
     And wait "30 seconds"
 
 # UPGRADING THEN WORKERS 
-    Scenario: Upgrading Workers
-    When I run "kubectl get pods --namespace=kube-system"
-    And VARIABLE "imba-cluster" equals "/root/go/src/github.com/fgerling/bdd-poc/imba-cluster"
-    When VARIABLE "privileged-pods" equals ContainersFROMOutput "kured-"
-    And VARIABLES "commandchecks" equals "kubectl describe pod -n kube-system " plus VAR:"privileged-pods"
-    And I run VARS:"commandchecks" and IPSFromOutput
-
+    #Scenario: Upgrading Workers
     When VARIABLES "commandupgrades2" equals "skuba node upgrade plan " plus Worker Nodes
-    And VARIABLE "imba-cluster" equals "/root/go/src/github.com/fgerling/bdd-poc/imba-cluster"
+    #And VARIABLE "imba-cluster" equals "/root/go/src/github.com/fgerling/bdd-poc/imba-cluster"
     And I run UPGRADE VARS:"commandupgrades2" in VAR:"imba-cluster" directory
     Then the output contains "kubelet" and "cri-o"
     And I run UPGRADE VARS:"commandupgrades2" in VAR:"imba-cluster" directory
