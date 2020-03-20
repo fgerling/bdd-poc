@@ -57,6 +57,7 @@ Scenario: Applying upgrade on nodes
 # UPGRADING THEN WORKERS 
     Scenario: Upgrading Workers
     When VARIABLES "commandupgrades2" equals "skuba node upgrade plan " plus Worker Nodes
+    And VARIABLE "imba-cluster" equals "/root/go/src/github.com/fgerling/bdd-poc/imba-cluster"
     And I run UPGRADE VARS:"commandupgrades2" in VAR:"imba-cluster" directory
     Then the output contains "kubelet" and "cri-o"
     And I run UPGRADE VARS:"commandupgrades2" in VAR:"imba-cluster" directory
@@ -64,7 +65,7 @@ Scenario: Applying upgrade on nodes
 
     When VARIABLES "upgradeapply2" equals "skuba node upgrade apply --user sles --sudo --target " plus Worker Node IPS
     And I run UPGRADE VARS:"upgradeapply2" in VAR:"imba-cluster" directory
-    Then the output contains "successfully" or "to date" or "there are addon upgrades available"s
+    Then the output contains "successfully" or "to date" or "there are addon upgrades available"
  
     When I run "skuba addon upgrade apply" in VAR:"imba-cluster" directory
     Then the output contains "not all nodes"
