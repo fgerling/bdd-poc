@@ -2,6 +2,7 @@ package features
 
 import (
 	"fmt"
+	"os"
 	"strings"
 )
 
@@ -77,5 +78,27 @@ func (test *TestRun) IRunUPGRADEVARSInVARDirectory(arg1, arg2 string) error {
 			break
 		}
 	}
+	return nil
+}
+
+func (test *TestRun) IReplaceCiliumVersionInOUTPUT() error {
+	template := fmt.Sprintf("%s", string(test.Output))
+	for index, row := range strings.Split(template, "\n") {
+		if strings.Contains(strings.ToLower(row), "cilium") {
+			version := strings.Split(template, "\n")[index+2]
+			replace_version := strings.Split(version, ":")[0] + ": 1.5.1"
+			template = strings.Replace(template, version, replace_version, 1)
+			break
+		}
+	}
+	f, err := os.Create("skubaconf.yaml")
+	if err != nil {
+		fmt.Println(err)
+	}
+	_, err = f.WriteString(template)
+	if err != nil {
+		fmt.Println(err)
+	}
+	f.Close()
 	return nil
 }
