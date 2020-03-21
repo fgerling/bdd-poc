@@ -1,4 +1,4 @@
-# TC:   https://github.com/fgerling/bdd-poc
+# TC:   https://github.com/SUSE/caasp-test-cases
 # PR:   https://github.com/SUSE/skuba/pull/911
 # FEATURE: skuba cluster upgrade
 
