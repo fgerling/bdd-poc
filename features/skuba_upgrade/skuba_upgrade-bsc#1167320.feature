@@ -1,5 +1,6 @@
-# TC:   https://github.com/fgerling/bdd-poc
+# TC:   https://github.com/SUSE/caasp-test/cases (to be documented)
 # PR:   https://github.com/SUSE/skuba/pull/1018
+# BSC:  https://bugzilla.suse.com/show_bug.cgi?id=1167320
 # FEATURE: skuba addon upgrade
 
 # You are expected to run this test on a cluster bootstrapped with kubernetes-1.15.2
