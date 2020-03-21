@@ -150,4 +150,5 @@ func FeatureContext(s *godog.Suite) {
 	s.Step(`^VARIABLES "([^"]*)" equals "([^"]*)" plus Worker Nodes$`, test.VARIABLESEqualsPlusWorkerNodes)
 	s.Step(`^VARIABLES "([^"]*)" equals "([^"]*)" plus Master Node IPS$`, test.VARIABLESEqualsPlusMasterNodeIPS)
 	s.Step(`^VARIABLES "([^"]*)" equals "([^"]*)" plus Worker Node IPS$`, test.VARIABLESEqualsPlusWorkerNodeIPS)
+	s.Step(`^I replace Cilium Version in OUTPUT$`, test.IReplaceCiliumVersionInOUTPUT)
 }
