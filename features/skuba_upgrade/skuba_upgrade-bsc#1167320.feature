@@ -8,7 +8,7 @@ Feature: Check if cluster upgrade is fine
 
 Scenario: Checking if cluster exists
     Given "skuba" exist in gopath
-    And VARIABLE "imba-cluster" equals "/Users/alexeitighineanu/go/src/github.com/fgerling/bdd-poc/imba-cluster"
+    And VARIABLE "imba-cluster" I get from CONFIG
     When I run "skuba cluster status" in VAR:"imba-cluster" directory
     Then the output contains "master" and "worker"
     Then the output contains "1.15.2"
