@@ -20,7 +20,12 @@ Scenario: Checking if cluster exists
     Then the output contains "congratulations" or "are already"
 
     When I run "kubectl get configmaps skuba-config -n kube-system -o yaml" in VAR:"imba-cluster" directory
-    And I replace Cilium Version in OUTPUT
+    And I replace Cilium Version in OUTPUT and save it into skubaconf.yaml file
     And I run "kubectl apply -f skubaconf.yaml"
     And I run "skuba addon upgrade plan" in VAR:"imba-cluster" directory
     Then the output contains "addon upgrades for" or "->"
+
+    And I replace Gangway Version in OUTPUT and save it into skubaconf.yaml file
+    And I run "kubectl apply -f skubaconf.yaml"
+    And I run "skuba addon upgrade plan" in VAR:"imba-cluster" directory
+    Then the output contains "addon upgrades for" and "gangway"
