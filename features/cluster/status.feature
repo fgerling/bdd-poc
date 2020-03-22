@@ -3,8 +3,8 @@
 Feature: Skuba cluster status
 
   Scenario: checkout cluster status
-    Given there is "cluster" directory
+    Given VARIABLE "cluster" I get from CONFIG
     And "skuba" exist in gopath
-    When I run "skuba cluster status" in "cluster" directory
+    When I run "skuba cluster status" in VAR:"cluster" directory
     Then the output contains "master"
     And the output contains "worker"

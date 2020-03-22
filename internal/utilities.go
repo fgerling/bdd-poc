@@ -1,6 +1,7 @@
 package features
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"os"
@@ -94,4 +95,23 @@ func (test *TestRun) TreatErrors(err error) {
 	if err != nil {
 		fmt.Fprintf(os.Stdout, "\nError: %v\n", err)
 	}
+}
+
+func (test *TestRun) VARIABLEIGetFromCONFIG(arg1 string) error {
+	if test.VarMap == nil {
+		test.IStartTest()
+	}
+	var config Config
+	file, err := os.Open("config.json")
+	defer file.Close()
+	if err != nil {
+		test.TreatErrors(err)
+	}
+	if err := json.NewDecoder(file).Decode(&config); err != nil {
+		test.TreatErrors(err)
+	}
+	test.Config = config
+	test.VarMap[arg1] = config.ClusterDir
+	fmt.Printf("VAR: %s = %s", arg1, test.VarMap[arg1])
+	return nil
 }

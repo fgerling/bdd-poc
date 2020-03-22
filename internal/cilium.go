@@ -8,8 +8,6 @@ import (
 	"strings"
 )
 
-
-
 func (test *TestRun) VARIABLEEqualsContainersFROMOutput(arg1, arg2 string) error {
 	var err error
 	tmp := strings.Split(fmt.Sprintf("%s", string(test.Output)), "\n")
@@ -36,13 +34,12 @@ func (test *TestRun) VARIABLEEqualsContainerFROMOutput(arg1, arg2 string) error 
 }
 
 func (test *TestRun) VARIABLEEquals(arg1, arg2 string) error {
-	var err error
 	if test.VarMap == nil {
 		test.VarMap = make(map[string]string)
 	}
 	test.VarMap[arg1] = arg2
 	fmt.Printf(" VAR: %s = %s \n", arg1, test.VarMap[arg1])
-	return err
+	return nil
 }
 
 func (test *TestRun) VARIABLEEqualsPlusVARPlus(arg1, arg2, arg3, arg4 string) error {

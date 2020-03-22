@@ -102,6 +102,7 @@ func wait(arg1 string) error {
 func FeatureContext(s *godog.Suite) {
 	s.Step(`^I start test$`, test.IStartTest)
 	s.Step(`^wait "([^"]*)"$`, wait)
+	s.Step(`^VARIABLE "([^"]*)" I get from CONFIG$`, test.VARIABLEIGetFromCONFIG)
 	s.Step(`^"([^"]*)" exist in gopath$`, existInGopath)
 	s.Step(`^I git clone "([^"]*)" into "([^"]*)"$`, iGitCloneInto)
 	s.Step(`^I have "([^"]*)" in PATH$`, suse.IHaveInPATH)
@@ -144,6 +145,7 @@ func FeatureContext(s *godog.Suite) {
 	//-------------------Kured-specific test functions-------------------------------------------------
 	s.Step(`^I run VARS:"([^"]*)" and IPSFromOutput$`, test.IRunVARSAndIPSFromOutput)
 	s.Step(`^I run SSHCMD "([^"]*)" on MASTER$`, test.IRunSSHCMDOnMASTER)
+	s.Step(`^I insert in OUTPUT "([^"]*)" and save it to kurednew\.yaml$`, test.IInsertInOUTPUTAndSaveItToKurednewyaml)
 	//-------------------Skuba Upgrade - specific test fuctions----------------------------------------
 	s.Step(`^I run UPGRADE VARS:"([^"]*)" in VAR:"([^"]*)" directory$`, test.IRunUPGRADEVARSInVARDirectory)
 	s.Step(`^VARIABLES "([^"]*)" equals "([^"]*)" plus Master Nodes$`, test.VARIABLESEqualsPlusMasterNodes)

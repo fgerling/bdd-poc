@@ -78,3 +78,23 @@ func (test *TestRun) IRunSSHCMDOnMASTER(arg1 string) error {
 	//fmt.Printf("%s\n", fmt.Sprintf("%s", string(test.Output)))
 	return err
 }
+
+func (test *TestRun) IInsertInOUTPUTAndSaveItToKurednewyaml(arg1 string) error {
+	var kurednewouput string
+	for index, row := range strings.Split(fmt.Sprintf("%s", string(test.Output)), "\n") {
+		kurednewouput += row + "\n"
+		if strings.Contains(row, "- /usr/bin/kured") && strings.Contains(strings.Split(fmt.Sprintf("%s", string(test.Output)), "\n")[index-1], "- command:") {
+			kurednewouput += strings.Replace(row, "- /usr/bin/kured", "- --period=30s\n", 1)
+		}
+	}
+	f, err := os.Create("kurednew.yaml")
+	if err != nil {
+		test.TreatErrors(err)
+	}
+	_, err = f.WriteString(kurednewouput)
+	if err != nil {
+		test.TreatErrors(err)
+	}
+	f.Close()
+	return err
+}

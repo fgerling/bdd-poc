@@ -69,6 +69,9 @@ func (test *TestRun) IRunUPGRADEVARSInVARDirectory(arg1, arg2 string) error {
 			//fmt.Printf("Command we run: %s\n", test.VarMap[key])
 			test.Output = []byte{1}
 			err = test.IRunInDirectory(test.VarMap[key], test.VarMap[arg2])
+			if err != nil {
+				test.TreatErrors(err)
+			}
 			temp1 := test.UpgradeCheck[key]
 			temp1.PlanDone = true
 			if strings.Contains(test.VarMap[key], "apply") {

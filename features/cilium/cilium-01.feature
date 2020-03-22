@@ -7,8 +7,8 @@ Feature: cilium-basic
 
  Scenario: Test-Cilium-Basic on Skuba Cluster
     Given "skuba" exist in gopath
-    #And VARIABLE "work-folder" equals "/Users/alexeitighineanu/go/src/github.com/fgerling/bdd-poc/imba-cluster"
-    When I run "skuba cluster status"       
+    And VARIABLE "work-folder" I get from CONFIG
+    When I run "skuba cluster status" in VAR:"work-folder" directory      
     Then the output contains "master" and "worker"
     When I run "kubectl get all --namespace=kube-system"
     Then the output contains "cilium" and "dex"
@@ -32,15 +32,17 @@ Feature: cilium-basic
 
     Scenario: Test number1 if empire's ship is allowed into empire space
     And I run "kubectl exec tiefighter -- curl -sm10 -XPOST deathstar.default.svc.cluster.local/v1/request-landing"
-    Then the output contains "Ship" and "landed"
+    And wait "5 seconds"
+    Then the output contains "ship" and "landed"
 
     When I run "kubectl exec xwing -- curl -sm10 -XPOST deathstar.default.svc.cluster.local/v1/request-landing"
-    Then the output contains "Ship" and "landed"
+    And wait "5 seconds"
+    Then the output contains "ship" and "landed"
 
     Scenario: Test number2 if policies work properly
     When I run "kubectl create -f https://raw.githubusercontent.com/cilium/cilium/v1.6/examples/minikube/sw_l3_l4_policy.yaml"
     And I run "kubectl exec tiefighter -- curl -sm10 -XPOST deathstar.default.svc.cluster.local/v1/request-landing"
-    Then the output contains "Ship" and "landed"
+    Then the output contains "ship" and "landed"
 
     When I run "kubectl exec xwing -- curl -sm10 -XPOST deathstar.default.svc.cluster.local/v1/request-landing" expecting ERROR
     And wait "10 seconds"
@@ -85,7 +87,7 @@ Feature: cilium-basic
     Then the output contains "ciliumnetworkpolicy" and "deleted"
 
     Scenario: Deleting the pods
-    When VARIABLE "work-folder" equals "/Users/alexeitighineanu/go/src/github.com/fgerling/bdd-poc/imba-cluster"
+    When VARIABLE "work-folder" I get from CONFIG
     When I run "kubectl delete -f https://raw.githubusercontent.com/cilium/cilium/v1.6/examples/minikube/http-sw-app.yaml"
     Then the output contains "deathstar" and "deleted"
     Then the output contains "xwing" and "deleted"

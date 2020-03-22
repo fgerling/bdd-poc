@@ -6,7 +6,8 @@ Feature: bsc#1121353 - Kubernetes – Master node pod configured with Privileged
 
 Scenario: Checking if Privileged Pods
     Given "skuba" exist in gopath
-    When I run "skuba cluster status"
+    And VARIABLE "work-folder" I get from CONFIG
+    When I run "skuba cluster status" in VAR:"work-folder" directory
     Then the output contains "master" and "worker"
     When I run "kubectl get all --namespace=kube-system"
     Then the output contains "cilium" and "dex"
