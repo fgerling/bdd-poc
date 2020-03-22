@@ -7,7 +7,7 @@ Feature: Check if cluster upgrade is fine
 
 Scenario: Checking if cluster exists
     Given "skuba" exist in gopath
-    And VARIABLE "imba-cluster" equals "/root/go/src/github.com/fgerling/bdd-poc/imba-cluster"
+    And VARIABLE "imba-cluster" I get from CONFIG
     When I run "skuba cluster status" in VAR:"imba-cluster" directory
     Then the output contains "master" and "worker"
     Then the output contains "1.15.2"
@@ -26,7 +26,7 @@ Scenario: Checking if cluster exists
 
 Scenario: Applying upgrade on nodes
     When I run "kubectl get pods --namespace=kube-system"
-    And VARIABLE "imba-cluster" equals "/root/go/src/github.com/fgerling/bdd-poc/imba-cluster"
+    And VARIABLE "imba-cluster" I get from CONFIG
     When VARIABLE "privileged-pods" equals ContainersFROMOutput "kured-"
     And VARIABLES "commandchecks" equals "kubectl describe pod -n kube-system " plus VAR:"privileged-pods"
     And I run VARS:"commandchecks" and IPSFromOutput
@@ -57,7 +57,7 @@ Scenario: Applying upgrade on nodes
 # UPGRADING THEN WORKERS 
     #Scenario: Upgrading Workers
     When VARIABLES "commandupgrades2" equals "skuba node upgrade plan " plus Worker Nodes
-    #And VARIABLE "imba-cluster" equals "/root/go/src/github.com/fgerling/bdd-poc/imba-cluster"
+    And VARIABLE "imba-cluster" I get from CONFIG
     And I run UPGRADE VARS:"commandupgrades2" in VAR:"imba-cluster" directory
     Then the output contains "kubelet" and "cri-o"
     And I run UPGRADE VARS:"commandupgrades2" in VAR:"imba-cluster" directory
