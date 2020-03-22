@@ -1,4 +1,4 @@
-# TC:   https://github.com/SUSE/caasp-test/cases (to be documented)
+# TC:   https://github.com/SUSE/caasp-test/features/skuba_upgrade/skuba_upgrade_bsc#1167320.feature
 # PR:   https://github.com/SUSE/skuba/pull/1018
 # BSC:  https://bugzilla.suse.com/show_bug.cgi?id=1167320
 # FEATURE: skuba addon upgrade
