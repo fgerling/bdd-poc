@@ -3,6 +3,7 @@ package features
 import (
 	"errors"
 	"fmt"
+	"os"
 	"strings"
 )
 
@@ -87,4 +88,10 @@ func (test *TestRun) GrepFor(arg1 string) error {
 		}
 	}
 	return err
+}
+
+func (test *TestRun) TreatErrors(err error) {
+	if err != nil {
+		fmt.Fprintf(os.Stdout, "\nError: %v\n", err)
+	}
 }

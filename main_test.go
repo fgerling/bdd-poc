@@ -150,5 +150,6 @@ func FeatureContext(s *godog.Suite) {
 	s.Step(`^VARIABLES "([^"]*)" equals "([^"]*)" plus Worker Nodes$`, test.VARIABLESEqualsPlusWorkerNodes)
 	s.Step(`^VARIABLES "([^"]*)" equals "([^"]*)" plus Master Node IPS$`, test.VARIABLESEqualsPlusMasterNodeIPS)
 	s.Step(`^VARIABLES "([^"]*)" equals "([^"]*)" plus Worker Node IPS$`, test.VARIABLESEqualsPlusWorkerNodeIPS)
-	s.Step(`^I replace Cilium Version in OUTPUT$`, test.IReplaceCiliumVersionInOUTPUT)
+	s.Step(`^I replace Cilium Version in OUTPUT and save it into skubaconf\.yaml file$`, test.IReplaceCiliumVersionInOUTPUTAndSaveItIntoSkubaconfyamlFile)
+	s.Step(`^I replace Gangway Version in OUTPUT and save it into skubaconf\.yaml file$`, test.IReplaceGangwayVersionInOUTPUTAndSaveItIntoSkubaconfyamlFile)
 }

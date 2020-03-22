@@ -63,11 +63,12 @@ func (test *TestRun) VARIABLESEqualsPlusWorkerNodeIPS(arg1, arg2 string) error {
 }
 
 func (test *TestRun) IRunUPGRADEVARSInVARDirectory(arg1, arg2 string) error {
+	var err error
 	for key, _ := range test.VarMap {
 		if strings.Contains(key, arg1) && test.UpgradeCheck[key].PlanDone == false {
 			//fmt.Printf("Command we run: %s\n", test.VarMap[key])
 			test.Output = []byte{1}
-			test.IRunInDirectory(test.VarMap[key], test.VarMap[arg2])
+			err = test.IRunInDirectory(test.VarMap[key], test.VarMap[arg2])
 			temp1 := test.UpgradeCheck[key]
 			temp1.PlanDone = true
 			if strings.Contains(test.VarMap[key], "apply") {
@@ -78,10 +79,10 @@ func (test *TestRun) IRunUPGRADEVARSInVARDirectory(arg1, arg2 string) error {
 			break
 		}
 	}
-	return nil
+	return err
 }
 
-func (test *TestRun) IReplaceCiliumVersionInOUTPUT() error {
+func (test *TestRun) IReplaceCiliumVersionInOUTPUTAndSaveItIntoSkubaconfyamlFile() error {
 	template := fmt.Sprintf("%s", string(test.Output))
 	for index, row := range strings.Split(template, "\n") {
 		if strings.Contains(strings.ToLower(row), "cilium") {
@@ -93,12 +94,34 @@ func (test *TestRun) IReplaceCiliumVersionInOUTPUT() error {
 	}
 	f, err := os.Create("skubaconf.yaml")
 	if err != nil {
-		fmt.Println(err)
+		test.TreatErrors(err)
 	}
 	_, err = f.WriteString(template)
 	if err != nil {
-		fmt.Println(err)
+		test.TreatErrors(err)
 	}
 	f.Close()
-	return nil
+	return err
+}
+
+func (test *TestRun) IReplaceGangwayVersionInOUTPUTAndSaveItIntoSkubaconfyamlFile() error {
+	template := fmt.Sprintf("%s", string(test.Output))
+	for index, row := range strings.Split(template, "\n") {
+		if strings.Contains(strings.ToLower(row), "gangway") {
+			version := strings.Split(template, "\n")[index+2]
+			replace_version := strings.Split(version, ":")[0] + ": 2.1.0-rev4"
+			template = strings.Replace(template, version, replace_version, 1)
+			break
+		}
+	}
+	f, err := os.Create("skubaconf.yaml")
+	if err != nil {
+		test.TreatErrors(err)
+	}
+	_, err = f.WriteString(template)
+	if err != nil {
+		test.TreatErrors(err)
+	}
+	f.Close()
+	return err
 }
