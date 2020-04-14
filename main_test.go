@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"log"
 	"net"
 	"os"
 	"os/exec"
@@ -11,10 +12,12 @@ import (
 
 	"github.com/cucumber/godog"
 	suse "github.com/fgerling/bdd-poc/internal/suse"
-	git "gopkg.in/src-d/go-git.v4"
+	git "github.com/go-git/go-git/v5"
 )
 
 var Output []byte
+
+//var test TestRun
 
 func existInGopath(arg1 string) error {
 	return theFileExist(path.Join(os.Getenv("GOPATH"), "bin"))
@@ -113,6 +116,26 @@ func theOutputShoudMatchTheOutputTheCommand(command2 string) error {
 }
 
 func FeatureContext(s *godog.Suite) {
+	var err error
+	var t TestRun
+	t.RestConfig, err = GetClientRestConfig()
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	t.ClientSet, err = t.CreateClientSet()
+	if err != nil {
+		log.Fatal(err)
+	}
+	s.Step(`^I do test "([^"]*)"$`, IDoTest)
+	s.Step(`^DaemonSet "([^"]*)" in namespace "([^"]*)" exists$`, t.DaemonSetInNamespaceExists)
+	s.Step(`^DaemonSet "([^"]*)" in namespace "([^"]*)" should be ready$`, t.DaemonSetInNamespaceIsReady)
+	s.Step(`^Deployment "([^"]*)" in namespace "([^"]*)" exists$`, t.DeploymentInNamespaceExists)
+	s.Step(`^Deployment "([^"]*)" in namespace "([^"]*)" should be ready$`, t.DeploymentInNamespaceIsReady)
+	s.Step(`^ConfigMap "([^"]*)" in namespace "([^"]*)" exists$`, t.ConfigMapInNamespaceExists)
+	s.Step(`^cilium ConfigMap does have the options:$`, t.ciliumConfigMapDoesHaveTheOptions)
+	s.Step(`^cilium ConfigMap does not have the options:$`, t.ciliumConfigMapDoesNotHaveTheOptions)
+
 	s.Step(`^"([^"]*)" exist in gopath$`, existInGopath)
 	s.Step(`^I git clone "([^"]*)" into "([^"]*)"$`, iGitCloneInto)
 	s.Step(`^I have "([^"]*)" in PATH$`, suse.IHaveInPATH)
@@ -135,4 +158,8 @@ func FeatureContext(s *godog.Suite) {
 	s.Step(`^there is no "([^"]*)" directory$`, thereIsNoDirectory)
 	s.Step(`^I run "([^"]*)"$`, func(command string) error { return iRunInDirectory(command, ".") })
 	s.Step(`^I have the correct go version$`, func() error { return iRunInDirectory("make go-version-check", "skuba") })
+
+	//	s.BeforeScenario(func(*messages.Pickle) {
+	//	})
+
 }
