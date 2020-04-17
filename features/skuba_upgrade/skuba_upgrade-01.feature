@@ -14,15 +14,23 @@ Scenario: Checking if cluster exists
     When I run "kubectl get all --namespace=kube-system"
     Then the output contains "cilium" and "dex"
     When I run "skuba version"
-    Then the output contains "v1.2.6" or "v1.2.7"
+    Then the output contains "v1.0.2" or "v1.1.2"
 
     When I run "skuba cluster upgrade plan" in VAR:"imba-cluster" directory
     Then the output contains "current kubernetes" and "latest kubernetes"
     #Then the output contains "upgrade path to update"
     #Then the output contains "addon upgrades from"
 
+    When I run "zypper -n in skuba-1.2.1"
+    Then the output contains "installed"
+	
+    When I run "skuba cluster upgrade plan" in VAR:"imba-cluster" directory
+    Then the output contains "current kubernetes" and "latest kubernetes"
+    #Then the output contains "upgrade path to update"
+    #Then the output contains "addon upgrades from"
+
     When I run "skuba addon upgrade apply" in VAR:"imba-cluster" directory
-    Then the output contains "congratulations" or "not all"
+    Then the output contains "congratulations" or "ot all"
 
 Scenario: Applying upgrade on nodes
     When I run "kubectl get pods --namespace=kube-system"
@@ -46,13 +54,13 @@ Scenario: Applying upgrade on nodes
     When VARIABLES "upgradeapply" equals "skuba node upgrade apply --user sles --sudo --target " plus Master Node IPS
     And I run UPGRADE VARS:"upgradeapply" in VAR:"imba-cluster" directory
     Then the output contains "successfully" or "to date" or "there are addon upgrades available"
-    And wait "30 seconds"
+    And wait "120 seconds"
     And I run UPGRADE VARS:"upgradeapply" in VAR:"imba-cluster" directory
     Then the output contains "successfully" or "to date" or "there are addon upgrades available"
-    And wait "30 seconds"
+    And wait "120 seconds"
     And I run UPGRADE VARS:"upgradeapply" in VAR:"imba-cluster" directory
     Then the output contains "successfully" or "to date" or "there are addon upgrades available"
-    And wait "30 seconds"
+    And wait "120 seconds"
 
 # UPGRADING THEN WORKERS 
     #Scenario: Upgrading Workers
