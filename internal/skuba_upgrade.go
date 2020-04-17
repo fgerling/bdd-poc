@@ -3,7 +3,10 @@ package features
 import (
 	"fmt"
 	"os"
+	"os/exec"
 	"strings"
+	"time"
+	"log"
 )
 
 func (test *TestRun) VARIABLESEqualsPlusMasterNodes(arg1, arg2 string) error {
@@ -62,10 +65,29 @@ func (test *TestRun) VARIABLESEqualsPlusWorkerNodeIPS(arg1, arg2 string) error {
 	return nil
 }
 
+func (test *TestRun) CheckKubernetesAPI() (bool, error) {
+cmdargs := []string{"kubectl", "get", "all", "-n", "kube-system"}
+cmd := exec.Command(cmdargs[0], cmdargs[1:]...)
+cmd.Dir = test.Config.ClusterDir
+output, err := cmd.CombinedOutput()
+if err != nil {
+log.Printf("Error: %s\n", err)
+}
+return strings.Contains(fmt.Sprintf("%s", string(output)), "kured"), err 
+}
+
 func (test *TestRun) IRunUPGRADEVARSInVARDirectory(arg1, arg2 string) error {
 	var err error
 	for key, _ := range test.VarMap {
 		if strings.Contains(key, arg1) && test.UpgradeCheck[key].PlanDone == false {
+			for {
+			log.Println("Waiting for k8s API to come back up...")
+			trigger,_ := test.CheckKubernetesAPI()
+			if trigger {
+			break
+			}
+			time.Sleep(5 * time.Second)
+			}
 			//fmt.Printf("Command we run: %s\n", test.VarMap[key])
 			test.Output = []byte{1}
 			err = test.IRunInDirectory(test.VarMap[key], test.VarMap[arg2])
