@@ -1,4 +1,7 @@
 Feature: coredns-basic
+  Background:
+    Given the environment variable "KUBECONFIG" is set to "cluster/admin.conf"
+
   Scenario: the 2 coredns pods are ready
     When I run "kubectl -n kube-system get deploy coredns -ojsonpath={.spec.replicas}"
     Then the output contains "2"

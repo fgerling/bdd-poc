@@ -111,6 +111,9 @@ func theOutputShoudMatchTheOutputTheCommand(command2 string) error {
 	}
 	return theOutputContains(string(cmd2Output))
 }
+func theEnvironmentVariableIsSetTo(variable, value string) error {
+	return os.Setenv(variable, value)
+}
 
 func FeatureContext(s *godog.Suite) {
 	s.Step(`^"([^"]*)" exist in gopath$`, existInGopath)
@@ -135,4 +138,5 @@ func FeatureContext(s *godog.Suite) {
 	s.Step(`^there is no "([^"]*)" directory$`, thereIsNoDirectory)
 	s.Step(`^I run "([^"]*)"$`, func(command string) error { return iRunInDirectory(command, ".") })
 	s.Step(`^I have the correct go version$`, func() error { return iRunInDirectory("make go-version-check", "skuba") })
+	s.Step(`^the environment variable "([^"]*)" is set to "([^"]*)"$`, theEnvironmentVariableIsSetTo)
 }
