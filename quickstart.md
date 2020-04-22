@@ -1,15 +1,23 @@
 ## Quick Start
 I want to guide you through the first steps of BDD. 
 
-First, we need a framework that can match "steps" of test cases against golang functions. We are using [`godog`](https://github.com/cucumber/godog).
+As prerequise we need a working golang installation. Either follow the the [upstream documentation](https://golang.org/doc/install) or stay SUSE:
 ```
-go get github.com/cucumber/godog/cmd/godog
+sudo zypper install go
+eval "$(go env)"
+PATH=$GOPATH/bin:$PATH
+# you can also modify the PATH in your .bashrc
 ```
 
-Next, we need some test cases and golang code that implement the test case steps.
+With a working golang installation, we need some test cases and golang code that implement the test case steps.
 ```
 git clone https://github.com/fgerling/bdd-poc.git
 cd bdd-poc
+```
+
+Then, we need a framework that can match the "steps" of test cases against golang functions. We are using [`godog`](https://github.com/cucumber/godog).
+```
+go get github.com/cucumber/godog/cmd/godog
 ```
 
 Have a look at the project layout:
