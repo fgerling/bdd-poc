@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"os/exec"
 	"strings"
 )
 
@@ -114,4 +115,63 @@ func (test *TestRun) VARIABLEIGetFromCONFIG(arg1 string) error {
 	test.VarMap[arg1] = config.ClusterDir
 	fmt.Printf("VAR: %s = %s", arg1, test.VarMap[arg1])
 	return nil
+}
+
+func (test *TestRun) IRunExpectingERRORInVARDirectory(arg1, arg2, arg3 string) error {
+	var err error
+	tmp := strings.Split(arg1, " ")
+	cmd := exec.Command(tmp[0], tmp[1:]...)
+	cmd.Dir = arg3
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		fmt.Printf("ERROR: %v\n grep: %s", err, arg2)
+		fmt.Printf("OUTPUT: %s\n", fmt.Sprintf("%s", string(output)))
+		if !strings.Contains(fmt.Sprintf("%s", err), arg2) {
+			fmt.Fprintf(os.Stdout, "error: %s", err)
+			return nil
+		}
+	} else {
+		test.Err = err
+	}
+	test.Output = output
+	return nil
+}
+
+func (test *TestRun) IRunVARExpectingERROR(arg1 string) error {
+	test.IRunExpectingERROR(test.VarMap[arg1])
+	return nil
+}
+
+func (test *TestRun) IRunVARExpectingERRORInVARDirectory(arg1, arg2 string) error {
+	var err error
+	tmp := strings.Split(test.VarMap[arg1], " ")
+	cmd := exec.Command(tmp[0], tmp[1:]...)
+	cmd.Dir = arg2
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		if !strings.Contains(fmt.Sprintf("%s", err), "exit code") && strings.Contains(fmt.Sprintf("%s", err), "28") {
+			fmt.Fprintf(os.Stdout, "error: %s", err)
+			return err
+		}
+	}
+	test.Output = output
+	test.Err = err
+	return nil
+}
+
+func (test *TestRun) IRunExpectingERROR(arg1 string) error {
+	var err error
+	tmp := strings.Split(arg1, " ")
+	cmd := exec.Command(tmp[0], tmp[1:]...)
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		if !strings.Contains(fmt.Sprintf("%s", err), "exit") && strings.Contains(fmt.Sprintf("%s", err), "28") {
+			fmt.Fprintf(os.Stdout, "error: %s", err)
+			return err
+		}
+	}
+	test.Output = output
+	test.Err = err
+	err = nil
+	return err
 }

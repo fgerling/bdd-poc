@@ -2,8 +2,6 @@ package features
 
 import (
 	"fmt"
-	"os"
-	"os/exec"
 	"strconv"
 	"strings"
 )
@@ -76,46 +74,6 @@ func (test *TestRun) TheErrorContainsAnd(arg1, arg2 string) error {
 	if !strings.Contains(fmt.Sprintf("%s", test.Err), arg1) && strings.Contains(fmt.Sprintf("%s", test.Err), arg2) {
 		fmt.Println("ERROR!!!")
 	}
-	return err
-}
-
-func (test *TestRun) IRunExpectingERROR(arg1 string) error {
-	var err error
-	tmp := strings.Split(arg1, " ")
-	cmd := exec.Command(tmp[0], tmp[1:]...)
-	output, err := cmd.CombinedOutput()
-	if err != nil {
-		if !strings.Contains(fmt.Sprintf("%s", err), "exit") && strings.Contains(fmt.Sprintf("%s", err), "28") {
-			fmt.Fprintf(os.Stdout, "error: %s", err)
-			return err
-		}
-	}
-	test.Output = output
-	test.Err = err
-	err = nil
-	return err
-}
-
-func (test *TestRun) IRunVARExpectingERROR(arg1 string) error {
-	test.IRunExpectingERROR(test.VarMap[arg1])
-	return nil
-}
-
-func (test *TestRun) IRunVARExpectingERRORInVARDirectory(arg1, arg2 string) error {
-	var err error
-	tmp := strings.Split(arg1, " ")
-	cmd := exec.Command(tmp[0], tmp[1:]...)
-	cmd.Dir = arg2
-	output, err := cmd.CombinedOutput()
-	if err != nil {
-		if !strings.Contains(fmt.Sprintf("%s", err), "exit code") && strings.Contains(fmt.Sprintf("%s", err), "28") {
-			fmt.Fprintf(os.Stdout, "error: %s", err)
-			return err
-		}
-	}
-	test.Output = output
-	test.Err = err
-	err = nil
 	return err
 }
 

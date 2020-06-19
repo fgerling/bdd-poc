@@ -127,6 +127,7 @@ func FeatureContext(s *godog.Suite) {
 	s.Step(`^the output contains "([^"]*)"$`, test.TheOutputContains)
 	s.Step(`^I have the correct go version$`, func() error { return test.IRunInDirectory("make go-version-check", "skuba") })
 	s.Step(`^grep for "([^"]*)"$`, test.GrepFor)
+	s.Step(`^I run "([^"]*)" expecting ERROR:"([^"]*)" in VAR:"([^"]*)" directory$`, test.IRunExpectingERRORInVARDirectory)
 	//--------------------Cilium-specific test functions-----------------------------------------------
 	s.Step(`^I run VARS:"([^"]*)" and check for "([^"]*)" and "([^"]*)"$`, test.IRunVARSAndCheckForAnd)
 	s.Step(`^VARIABLE "([^"]*)" equals ContainersFROMOutput "([^"]*)"$`, test.VARIABLEEqualsContainersFROMOutput)

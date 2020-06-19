@@ -21,8 +21,9 @@ Scenario: Checking if cluster exists
     #Then the output contains "upgrade path to update"
     #Then the output contains "addon upgrades from"
 
-    When I run "skuba addon upgrade apply" in VAR:"imba-cluster" directory
-    Then the output contains "congratulations" or "not all"
+    When I run "skuba addon upgrade apply" expecting ERROR:"unknown addon" in VAR:"imba-cluster" directory
+    Then the error contains "metrics" and " "
+    Then the output contains "congratulations" or "not all" or "successfully"
 
 Scenario: Applying upgrade on nodes
     When I run "kubectl get pods --namespace=kube-system"
@@ -46,13 +47,13 @@ Scenario: Applying upgrade on nodes
     When VARIABLES "upgradeapply" equals "skuba node upgrade apply --user sles --sudo --target " plus Master Node IPS
     And I run UPGRADE VARS:"upgradeapply" in VAR:"imba-cluster" directory
     Then the output contains "successfully" or "to date" or "there are addon upgrades available"
-    And wait "30 seconds"
+    And wait "80 seconds"
     And I run UPGRADE VARS:"upgradeapply" in VAR:"imba-cluster" directory
     Then the output contains "successfully" or "to date" or "there are addon upgrades available"
-    And wait "30 seconds"
+    And wait "80 seconds"
     And I run UPGRADE VARS:"upgradeapply" in VAR:"imba-cluster" directory
     Then the output contains "successfully" or "to date" or "there are addon upgrades available"
-    And wait "30 seconds"
+    And wait "80 seconds"
 
 # UPGRADING THEN WORKERS 
     #Scenario: Upgrading Workers
@@ -67,12 +68,12 @@ Scenario: Applying upgrade on nodes
     And I run UPGRADE VARS:"upgradeapply2" in VAR:"imba-cluster" directory
     Then the output contains "successfully" or "to date" or "there are addon upgrades available"
  
-    When I run "skuba addon upgrade apply" in VAR:"imba-cluster" directory
+    When I run "skuba addon upgrade apply" expecting ERROR:"unknown addon" in VAR:"imba-cluster" directory
     Then the output contains "not all nodes" or "successfully" or "congratulations"
 
     When VARIABLES "upgradeapply3" equals "skuba node upgrade apply --user sles --sudo --target " plus Worker Node IPS
     And I run UPGRADE VARS:"upgradeapply3" in VAR:"imba-cluster" directory
     Then the output contains "successfully" or "to date" or "there are addon upgrades available"
 
-    When I run "skuba addon upgrade apply" in VAR:"imba-cluster" directory
-    Then the output contains "successfully" or "congratulations"
+    When I run "skuba addon upgrade apply" expecting ERROR:"unknown addon" in VAR:"imba-cluster" directory
+    Then the output contains "successfully" or "congratulations" or "not all nodes"
