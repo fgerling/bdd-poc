@@ -2,7 +2,7 @@
 # PR:   https://github.com/SUSE/skuba/pull/911
 # FEATURE: skuba cluster upgrade
 
-# You are expected to run this test on a cluster bootstrapped with kubernetes-1.15.2
+# You are expected to run this test on a cluster bootstrapped with kubernetes-1.16.2
 Feature: Check if cluster upgrade is fine
 
 Scenario: Checking if cluster exists
@@ -10,23 +10,18 @@ Scenario: Checking if cluster exists
     And VARIABLE "imba-cluster" I get from CONFIG
     When I run "skuba cluster status" in VAR:"imba-cluster" directory
     Then the output contains "master" and "worker"
-    Then the output contains "1.15.2"
+    Then the output contains "1.16.2"
     When I run "kubectl get all --namespace=kube-system"
     Then the output contains "cilium" and "dex"
     When I run "skuba version"
-    Then the output contains "v1.0.2" or "v1.1.2"
+    Then the output contains "v1.2.4" or "v1.3.1" or "1.2.9"
 
     When I run "skuba cluster upgrade plan" in VAR:"imba-cluster" directory
     Then the output contains "current kubernetes" and "latest kubernetes"
     #Then the output contains "upgrade path to update"
     #Then the output contains "addon upgrades from"
 
-<<<<<<< HEAD
-    When I run "skuba addon upgrade apply" expecting ERROR:"unknown addon" in VAR:"imba-cluster" directory
-    Then the error contains "metrics" and " "
-    Then the output contains "congratulations" or "not all" or "successfully"
-=======
-    When I run "zypper -n in skuba-1.2.1"
+    When I run "zypper -n in skuba-1.3.1"
     Then the output contains "installed"
 	
     When I run "skuba cluster upgrade plan" in VAR:"imba-cluster" directory
@@ -36,7 +31,6 @@ Scenario: Checking if cluster exists
 
     When I run "skuba addon upgrade apply" in VAR:"imba-cluster" directory
     Then the output contains "congratulations" or "ot all"
->>>>>>> 0ea92486ed0ea35bac64f5ebea1989dd4b9f4019
 
 Scenario: Applying upgrade on nodes
     When I run "kubectl get pods --namespace=kube-system"
@@ -68,7 +62,6 @@ Scenario: Applying upgrade on nodes
     Then the output contains "successfully" or "to date" or "there are addon upgrades available"
     And wait "120 seconds"
 
-
 # UPGRADING THEN WORKERS 
     #Scenario: Upgrading Workers
     When VARIABLES "commandupgrades2" equals "skuba node upgrade plan " plus Worker Nodes
@@ -82,12 +75,12 @@ Scenario: Applying upgrade on nodes
     And I run UPGRADE VARS:"upgradeapply2" in VAR:"imba-cluster" directory
     Then the output contains "successfully" or "to date" or "there are addon upgrades available"
  
-    When I run "skuba addon upgrade apply" expecting ERROR:"unknown addon" in VAR:"imba-cluster" directory
+    When I run "skuba addon upgrade apply" in VAR:"imba-cluster" directory
     Then the output contains "not all nodes" or "successfully" or "congratulations"
 
     When VARIABLES "upgradeapply3" equals "skuba node upgrade apply --user sles --sudo --target " plus Worker Node IPS
     And I run UPGRADE VARS:"upgradeapply3" in VAR:"imba-cluster" directory
     Then the output contains "successfully" or "to date" or "there are addon upgrades available"
 
-    When I run "skuba addon upgrade apply" expecting ERROR:"unknown addon" in VAR:"imba-cluster" directory
-    Then the output contains "successfully" or "congratulations" or "not all nodes"
+    When I run "skuba addon upgrade apply" in VAR:"imba-cluster" directory
+    Then the output contains "successfully" or "congratulations"
